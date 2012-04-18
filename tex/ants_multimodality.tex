@@ -47,7 +47,7 @@
 
 \begin{document}
 
-\title[ANTsMM]{Multi-modality processing with Advanced Normalization
+\title[ANTsMM]{Multi-modality processing with \newline Advanced Normalization
   Tools (ANTs)}
 \subtitle[ANTsMM]{Modern data fusion strategies}
 \institute[PICSL]{Brian Avants, PICSL and the ANTs Development Team}
@@ -74,29 +74,133 @@ distributed under the\\
 }
 
 
+% \begin{frame}
+%  \tableofcontents[hideallsubsections]
+% \end{frame}
+
+% \setbeamertemplate{background}{\includegraphics[width=\paperwidth]{../figures/ITKv4_transparent}}
+\setbeamertemplate{background}{\includegraphics[width=\paperwidth]{../figures/ants_background.pdf}}
+
+
 \begin{frame}
-  \tableofcontents[hideallsubsections]
+\frametitle{People}
+nick, gang, niels, shrinidhi ...
 \end{frame}
 
-\setbeamertemplate{background}{\includegraphics[width=\paperwidth]{../figures/ITKv4_transparent}}
+\begin{frame}
+\frametitle{History}
+ants history + relationship to ITK ( bidirectional )
+\end{frame}
 
-\include{Introduction}
+\begin{frame}
+\frametitle{Overview}
+ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
+\end{frame}
 
-\centeredlargetext{black}{white}{
-ANTs
-}
+\begin{frame}
+\frametitle{Scripting}
+ants is for scripting 
+\end{frame}
 
-\include{A}
+\begin{frame}
+\frametitle{Basic Toolset}
+ants-essential tools:  a mapping, a segmentation, a template and then label-guided and multivariate versions of these.  
+\end{frame}
 
-\centeredlargetext{black}{white}{
-Templates
-}
-
-\include{B}
+\begin{frame}
+\frametitle{Basic applications}
+ants-based studies:  ROI study of thickness, template-study of thickness/gmprob,  template-study of FA, multi-modality study, bold fmri study, asymmetry study.   dimensionality reduction.  
+\end{frame}
 
 
 \begin{frame}
-\frametitle{Insight Journal}
+\frametitle{Segmenting an image}
+standard ants call 
+\end{frame}
+
+\begin{frame}
+\frametitle{Segmenting an image with two modalities}
+r16 plus an edge map ... 
+\end{frame}
+
+\begin{frame}
+\frametitle{Meaning of parameters}
+what happens when i vary each parameter?
+\end{frame}
+
+\begin{frame}
+\frametitle{Cortical thickness}
+r16 thickness 
+\end{frame}
+
+\begin{frame}
+\frametitle{Meaning of parameters}
+what happens when i vary each parameter?
+\end{frame}
+
+\begin{frame}
+\frametitle{Mapping two images}
+standard ants call 
+\end{frame}
+
+\begin{frame}
+\frametitle{Meaning of parameters}
+what happens when i vary each parameter?
+\end{frame}
+
+\begin{frame}
+\frametitle{Coordinates of computation time}
+2D MSQ to 3D CC
+\end{frame}
+
+\begin{frame}
+\frametitle{Landmark-based registration}
+Schoenemann examples affine + bspline 
+\end{frame}
+
+\begin{frame}
+\frametitle{Multiple metrics driving registration}
+face example and why we use LMs @ the same time as data 
+\end{frame}
+
+\begin{frame}
+\frametitle{Template construction}
+group studies 
+\end{frame}
+
+\begin{frame}
+\frametitle{Templates for asymmetry analysis}
+chimpanzee cortical thickness 
+\end{frame}
+
+\begin{frame}
+\frametitle{Templates for all modalities}
+what is common?  brain
+\end{frame}
+
+\begin{frame}
+\frametitle{Longitudinal analysis with ANTs}
+script based 
+\end{frame}
+
+\begin{frame}
+\frametitle{Time series / rsfMRI analysis with ANTs}
+script based 
+\end{frame}
+
+\begin{frame}
+\frametitle{Statistical analysis with ANTs}
+script based 
+\end{frame}
+
+\begin{frame}
+\frametitle{How does structure and functional connectivity elaborate during development?}
+open data
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Reproducibility}
 \Huge
 \begin{itemize}
 \item a
@@ -111,3 +215,24 @@ Templates
 
 
 \end{document}
+
+
+
+ants multivariate tutorial
+
+implement with beamer : github, scripts, figures, etc
+
+pauly:  pointset matching with b-splines 
+
+hongzhi:  I will be interested to know how to incorporate additional information, such as landmarks, other than images to help registration, how to build atlases and do groupwise registration with ANTS
+
+JJ data as guide + ADNI for longitudinal processing 
+
+
+graph analysis
+
+I'm most interested in relating structural images to continuous behavioral measures - for example, age, the amount of improvement on a behavioral task, or the level of some CSF analyte (I'm assuming the analysis would be essentially identical for any continuous measure...).
+
+
+--- asymmetry is important 
+
