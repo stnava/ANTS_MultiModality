@@ -84,18 +84,103 @@ distributed under the\\
 
 \begin{frame}
 \frametitle{People}
-nick, gang, niels, shrinidhi ...
+\includegraphics[width=\paperwidth]{../figures/ants_contributors.pdf}
 \end{frame}
 
 \begin{frame}
 \frametitle{History}
-ants history + relationship to ITK ( bidirectional )
+\includegraphics[width=\paperwidth]{../figures/ants_history.pdf}
 \end{frame}
 
 \begin{frame}
-\frametitle{Overview}
-ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
+\frametitle{Overview:  Tool and brief description.}
+%ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
+\begin{tiny}
+{
+\begin{table}
+\begin{tabular}{|l|l|l|l|}
+\hline
+        Tool Name                                     & Description                                                                                                                                                    & Highlights                                                                                                         & Primary Reference                                                                                                                                                                                   \\ \hline
+        ANTS                                          & Interface to a
+variety of registration algorithms & Best performing normalization algorithm in multiple different studies.                                             & A reproducible evaluation of ANTs similarity metric performance in brain image registration                                                                                                         \\ 
+        antsRegistration                              & ITKv4 update to ANTS.                                                    & Takes full advantage of multi-core processing.                                                                     & A unified registration framework for ITK, WBIR 2012.                                                                                                                                                \\ 
+        Atropos                                       & Multivariate probabilitic EM segmentation                                                                                                                      & Can integrate information from multiple modalities and has a DTI-specific likelihood.                              & An open source multivariate framework for n-tissue segmentation with evaluation on public data.                                                                                                     \\ 
+        N4BiasFieldCorrection                         & Novel
+inhomogeneity field correction
+method                                                                                                                   
+& Considered new standard in bias correction by much of the medical imaging community.                       & N4ITK: improved N3 bias correction.                                                                                                                                                                 \\ 
+        ImageMath                                     & Basic operations on images.                                                                                                                                    & Works on 2D, 3D, 4D images.                                                                                        & ---                                                                                                                                                                                             \\ 
+        buildtemplateparallel                         & Optimal template construction in the diffeomorphic space.                                                                                                      & Used as a standard evaluation target for new template construction methodology.  New multimodality implementation. & The optimal template effect in hippocampus studies of diseased populations                                                                                                                          \\ 
+        WarpImageMultiTransform & Concatenates ANTS/ITK transforms                                                                                                                               & Can string together a series of N transforms to minimize interpolation error and resample.                         & ---                                                                                                                                                                                             \\ 
+        antsApplyTransforms & Concatenates ANTS/ITK transforms                                                                                                                               & Can string together a series of N transforms to minimize interpolation error and resample.                         & ---                                                                                                                                                                                             \\ 
+        KellyKapowski                                 & Cortical thickness estimation based on volumetric imagery + probabilistic segmentation                                                                         & The only multi-platform volumetric alternative to Freesurfer                                                       & Registration based cortical thickness measurement.                                                                                                                                                  \\ 
+        sccan                                         & Multivariate dimensionality reduction                                                                                                                          & New tools with lots of potential for improving detection power in medical imaging.                                 & Dementia induces correlated reductions in white matter integrity and cortical thickness: a multivariate neuroimaging study with sparse canonical correlation analysis.                              \\ 
+        antsMotionCorr                                & Motion correction + template construction methods for 4D images                                                                                                & Simple flexible rigid, affine, deformable motion correction for (mostly) functional data.                          & Estimation of perfusion and arterial transit time in myocardium using free-breathing myocardial arterial spin labeling with navigator-echo (not ideal but the only relevant one currently existing) \\
+\hline
+\end{tabular}
+\end{table}
+}
+\end{tiny}
 \end{frame}
+
+\begin{frame}
+\frametitle{Overview: Tool and highlight.}
+%ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
+\begin{tiny}
+{
+\begin{table}
+\begin{tabular}{|l|l|l|}
+\hline
+        Tool Name                                     & Highlights                                                                                                         & Primary Reference                                                                                                                                                                                   \\ \hline
+        ANTS                                          & Best performing normalization algorithm in multiple different studies.                                             & A reproducible evaluation of ANTs similarity metric performance in brain image registration                                                                                                         \\ 
+        antsRegistration                              & Takes full advantage of multi-core processing.                                                                     & A unified registration framework for ITK, WBIR 2012.                                                                                                                                                \\ 
+        Atropos                                       & Can integrate information from multiple modalities and has a DTI-specific likelihood.                              & An open source multivariate framework for n-tissue segmentation with evaluation on public data.                                                                                                     \\ 
+        N4BiasFieldCorrection                         & Considered new
+standard in bias correction by much of the medical imaging community & N4ITK: improved N3 bias correction.                                                                                                                                                                 \\ 
+        ImageMath                                     & Works on 2D, 3D, 4D images.                                                                                        & ---                                                                                                                                                                                             \\ 
+        buildtemplateparallel                         & Used as a standard evaluation target for new template construction methodology.  New multimodality implementation. & The optimal template effect in hippocampus studies of diseased populations                                                                                                                          \\ 
+        WarpImageMultiTransform & Can string together a series of N transforms to minimize interpolation error and resample.                         & ---                                                                                                                                                                                             \\ 
+        antsApplyTransforms & Can string together a series of N transforms to minimize interpolation error and resample.                         & ---                                                                                                                                                                                             \\ 
+        KellyKapowski                                 & The only multi-platform volumetric alternative to Freesurfer                                                       & Registration based cortical thickness measurement.                                                                                                                                                  \\ 
+        sccan                                         & New tools with lots of potential for improving detection power in medical imaging.                                 & Dementia induces correlated reductions in white matter integrity and cortical thickness: a multivariate neuroimaging study with sparse canonical correlation analysis.                              \\ 
+        antsMotionCorr                                & Simple flexible rigid, affine, deformable motion correction for (mostly) functional data.                          & Estimation of perfusion and arterial transit time in myocardium using free-breathing myocardial arterial spin labeling with navigator-echo (not ideal but the only relevant one currently existing) \\
+\hline
+\end{tabular}
+\end{table}
+}
+\end{tiny}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Overview: Tool and reference.}
+%ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
+\begin{tiny}
+{
+\begin{table}
+\begin{tabular}{|l|l|l|}
+\hline
+        Tool Name                                     & Primary Reference                                                                                                                                                                                   \\ \hline
+        ANTS                                          & A reproducible evaluation of ANTs similarity metric performance in brain image registration                                                                                                         \\ 
+        antsRegistration                              & A unified registration framework for ITK, WBIR 2012.                                                                                                                                                \\ 
+        Atropos                                       & An open source multivariate framework for n-tissue segmentation with evaluation on public data.                                                                                                     \\ 
+        N4BiasFieldCorrection                         & N4ITK: improved N3 bias correction.                                                                                                                                                                 \\ 
+        ImageMath                                     & ---                                                                                                                                                                                             \\ 
+        buildtemplateparallel                         & The optimal template effect in hippocampus studies of diseased populations                                                                                                                          \\ 
+        WarpImageMultiTransform & ---                                                                                                                                                                                             \\ 
+        antsApplyTransforms & ---                                                                                                                                                                                             \\ 
+        KellyKapowski                                 & Registration based cortical thickness measurement.                                                                                                                                                  \\ 
+        sccan                                         & Dementia
+induces correlated reductions in white matter integrity and cortical
+thickness ...                              \\ 
+        antsMotionCorr                                & Estimation of perfusion and arterial transit time in myocardium using free-breathing myocardial arterial spin labeling with navigator-echo (not ideal but the only relevant one currently existing) \\
+\hline
+\end{tabular}
+\end{table}
+}
+\end{tiny}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Scripting}
