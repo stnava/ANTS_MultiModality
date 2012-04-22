@@ -1,6 +1,6 @@
 \documentclass[18pt]{beamer}
 \usetheme{Madrid}
-
+\usepackage{alltt}
 \usepackage{graphics}
 \usepackage{listings}
 \usepackage{url}
@@ -93,7 +93,68 @@ distributed under the\\
 \end{frame}
 
 \begin{frame}
-\frametitle{Overview:  Tool and brief description.}
+\frametitle{Download ANTs binaries.}
+Go to:
+\newline
+\newline
+\href{http://sourceforge.net/projects/advants/files/}{link: \textcolor{blue}{ANTS release files}}
+\newline
+\newline
+ You will see folders for documentation, code, binaries.
+\newline
+\newline
+From the folder ANTS, select a specific release, e.g.:
+\newline
+\newline
+\href{http://sourceforge.net/projects/advants/files/ANTS/ANTS_1_9\_x/}{link: \textcolor{blue}{1\_9\_x binaries}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Install ANTs from source: Requires  git/svn cmake, C++}
+open a terminal window and make a new directory.  call it ANTs.
+
+$>$ mkdir ANTs
+
+$>$ cd ANTs
+
+then type
+
+$>$ svn checkout https://advants.svn.sourceforge.net/svnroot/advants
+ANTS
+
+$>$  mkdir bin
+
+$>$  cd bin/
+
+$>$  ccmake ../ANTS/trunk/
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Install ANTs from source: Requires  git/svn, cmake, C++}
+
+then, in cmake, type “c” and then “g”  then exit back to the
+terminal.   then:
+
+$>$  make -j 4
+
+and wait a while.
+
+If there is an error like  ``cannot find 'some ITK file' `` then try
+this:
+\newline
+\newline
+from the bin directory, cd into ITKv4 , then type:
+
+$>$  git pull origin master
+
+that will update ITK.
+
+you can then try 'make -j 4' again.
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview:  Tool $+$ brief description.}
 %ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
 \begin{tiny}
 {
@@ -124,7 +185,7 @@ method                                     
 \end{frame}
 
 \begin{frame}
-\frametitle{Overview: Tool and highlight.}
+\frametitle{Overview: Tool $+$ highlight.}
 %ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
 \begin{tiny}
 {
@@ -153,7 +214,7 @@ standard in bias correction by much of the medical imaging community & N4ITK: im
 
 
 \begin{frame}
-\frametitle{Overview: Tool and reference.}
+\frametitle{Overview: Tool $+$ reference.}
 %ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
 \begin{tiny}
 {
@@ -184,13 +245,42 @@ thickness ...                              \\
 
 \begin{frame}
 \frametitle{Scripting}
-ants is for scripting 
+\Large ANTs is for scripting!
+\begin{alltt} 
+ \#! /usr/bin/bash \newline
+ echo ANTs likes short bash scripts
+\end{alltt}
+\begin{alltt} 
+\#! /usr/bin/perl \newline
+print "Longer scripts should use perl";
+\end{alltt}
+\begin{alltt} 
+\#! /usr/bin/Rscript \newline
+print( paste( "but ANTs prefers'',''{\bf R}'' ) )
+\end{alltt}
 \end{frame}
 
 \begin{frame}
-\frametitle{Basic Toolset}
-ants-essential tools:  a mapping, a segmentation, a template and then label-guided and multivariate versions of these.  
+\frametitle{The Basic Toolset}
+ Registration: Data is in Examples/Data 
+\begin{alltt}
+ANTS 2 -m  CC[r16slice.nii.gz,r64slice.nii.gz,1,4] \newline
+ -t SyN[0.25]  -r Gauss[3,0] -o TEST -i 50x40x30
+\end{alltt}
+Segmentation
+\begin{alltt}
+Atropos -d 2 -a r16slice.nii.gz -x r16mask.nii.gz \newline
+-m [0.1,1x1]   -c [10,0]  -i kmeans[3]\newline
+-o [Output.nii.gz,Output\_prob\_\%02d.nii.gz]
+\end{alltt}
+Template building
+\begin{alltt}
+ bash buildtemplateparallel.sh -d 3 -m 30x50x20 \newline 
+-t GR  -s CC -c 1 -o OutPrefix  *ImageName*T1x.nii.gz
+\end{alltt}
 \end{frame}
+% ants-essential tools:  a mapping, a segmentation, a template and then label-guided and multivariate versions of these.  
+
 
 \begin{frame}
 \frametitle{Basic applications}
