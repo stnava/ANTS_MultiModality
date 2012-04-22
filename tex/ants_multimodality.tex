@@ -8,7 +8,7 @@
 \usepackage{xcolor}
 
 \lstset{language=C++,numbersep=1pt,identifierstyle=\color{blue!50!black},commentstyle=\color{yellow!50!black},xleftmargin=7pt,numberblanklines=false,numberstyle=\color{red!60!black},numbers=left,basicstyle=\tiny\ttfamily,keywordstyle=\color{green!60!black}\bfseries,stringstyle=\color{red!80!black}}
-
+\lstset{frame=shadowbox, rulesepcolor=\color{blue},breaklines=true,numbersep=5pt,basicstyle=\small\ttfamily}
 \newcommand{\lstlistingwithnumber}[3]{
 \begin{center}
 \lstinputlisting[linerange={#1-#2},firstnumber=#1]{#3}
@@ -88,8 +88,13 @@ distributed under the\\
 \end{frame}
 
 \begin{frame}
-\frametitle{History}
-\includegraphics[width=\paperwidth]{../figures/ants_history.pdf}
+\frametitle{History: Theory}
+\includegraphics[width=\paperwidth]{../figures/ants_history_t.pdf}
+\end{frame}
+
+\begin{frame}
+\frametitle{History: Implementation}
+\includegraphics[width=4.75in]{../figures/ants_history.pdf}
 \end{frame}
 
 \begin{frame}
@@ -154,25 +159,42 @@ you can then try 'make -j 4' again.
 \end{frame}
 
 \begin{frame}
-\frametitle{Overview:  Tool $+$ brief description.}
+\frametitle{Overview:  Program $+$ brief description 1}
 %ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
 \begin{tiny}
 {
 \begin{table}
-\begin{tabular}{|l|l|l|l|}
+\begin{tabular}{|p{2.0cm}|p{2.5cm}|p{3cm}|p{3cm}|}
 \hline
         Tool Name                                     & Description                                                                                                                                                    & Highlights                                                                                                         & Primary Reference                                                                                                                                                                                   \\ \hline
         ANTS                                          & Interface to a
 variety of registration algorithms & Best performing normalization algorithm in multiple different studies.                                             & A reproducible evaluation of ANTs similarity metric performance in brain image registration                                                                                                         \\ 
         antsRegistration                              & ITKv4 update to ANTS.                                                    & Takes full advantage of multi-core processing.                                                                     & A unified registration framework for ITK, WBIR 2012.                                                                                                                                                \\ 
         Atropos                                       & Multivariate probabilitic EM segmentation                                                                                                                      & Can integrate information from multiple modalities and has a DTI-specific likelihood.                              & An open source multivariate framework for n-tissue segmentation with evaluation on public data.                                                                                                     \\ 
-        N4BiasFieldCorrection                         & Novel
+        N4BiasFieldCorr...                         & Novel
 inhomogeneity field correction
 method                                                                                                                   
 & Considered new standard in bias correction by much of the medical imaging community.                       & N4ITK: improved N3 bias correction.                                                                                                                                                                 \\ 
         ImageMath                                     & Basic operations on images.                                                                                                                                    & Works on 2D, 3D, 4D images.                                                                                        & ---                                                                                                                                                                                             \\ 
         buildtemplateparallel                         & Optimal template construction in the diffeomorphic space.                                                                                                      & Used as a standard evaluation target for new template construction methodology.  New multimodality implementation. & The optimal template effect in hippocampus studies of diseased populations                                                                                                                          \\ 
-        WarpImageMultiTransform & Concatenates ANTS/ITK transforms                                                                                                                               & Can string together a series of N transforms to minimize interpolation error and resample.                         & ---                                                                                                                                                                                             \\ 
+\hline
+\end{tabular}
+\end{table}
+}
+\end{tiny}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Overview:  Program $+$ brief description 2}
+%ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
+\begin{tiny}
+{
+\begin{table}
+\begin{tabular}{|p{2.1cm}|p{2.4cm}|p{3cm}|p{3cm}|}
+\hline
+        Tool Name                                     & Description                                                                                                                                                    & Highlights                                                                                                         & Primary Reference                                                                                                                                                                                   \\ \hline
+        WarpImageMultiTrans... & Concatenates ANTS/ITK transforms                                                                                                                               & Can string together a series of N transforms to minimize interpolation error and resample.                         & ---                                                                                                                                                                                             \\ 
         antsApplyTransforms & Concatenates ANTS/ITK transforms                                                                                                                               & Can string together a series of N transforms to minimize interpolation error and resample.                         & ---                                                                                                                                                                                             \\ 
         KellyKapowski                                 & Cortical thickness estimation based on volumetric imagery + probabilistic segmentation                                                                         & The only multi-platform volumetric alternative to Freesurfer                                                       & Registration based cortical thickness measurement.                                                                                                                                                  \\ 
         sccan                                         & Multivariate dimensionality reduction                                                                                                                          & New tools with lots of potential for improving detection power in medical imaging.                                 & Dementia induces correlated reductions in white matter integrity and cortical thickness: a multivariate neuroimaging study with sparse canonical correlation analysis.                              \\ 
@@ -184,8 +206,10 @@ method                                     
 \end{tiny}
 \end{frame}
 
+\begin{comment}
+{
 \begin{frame}
-\frametitle{Overview: Tool $+$ highlight.}
+\frametitle{Overview: Program $+$ highlight.}
 %ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
 \begin{tiny}
 {
@@ -214,7 +238,7 @@ standard in bias correction by much of the medical imaging community & N4ITK: im
 
 
 \begin{frame}
-\frametitle{Overview: Tool $+$ reference.}
+\frametitle{Overview: Program $+$ reference.}
 %ants overview of tools :  multivariate registration, segmentation, bias correction, template building and image-math 
 \begin{tiny}
 {
@@ -241,10 +265,12 @@ thickness ...                              \\
 }
 \end{tiny}
 \end{frame}
+}
+\end{comment}
 
 
 \begin{frame}
-\frametitle{Scripting}
+\frametitle{Scripting for large-scale studies}
 \Large ANTs is for scripting!
 \begin{alltt} 
  \#! /usr/bin/bash \newline
@@ -262,18 +288,18 @@ print( paste( "but ANTs prefers'',''{\bf R}'' ) )
 
 \begin{frame}
 \frametitle{The Basic Toolset}
- Registration: Data is in Examples/Data 
+ \textcolor{blue}{Registration: Data is in Examples/Data} 
 \begin{alltt}
 ANTS 2 -m  CC[r16slice.nii.gz,r64slice.nii.gz,1,4] \newline
  -t SyN[0.25]  -r Gauss[3,0] -o TEST -i 50x40x30
 \end{alltt}
-Segmentation
+\textcolor{blue}{Segmentation}
 \begin{alltt}
 Atropos -d 2 -a r16slice.nii.gz -x r16mask.nii.gz \newline
 -m [0.1,1x1]   -c [10,0]  -i kmeans[3]\newline
 -o [Output.nii.gz,Output\_prob\_\%02d.nii.gz]
 \end{alltt}
-Template building
+\textcolor{blue}{Template building}
 \begin{alltt}
  bash buildtemplateparallel.sh -d 3 -m 30x50x20 \newline 
 -t GR  -s CC -c 1 -o OutPrefix  *ImageName*T1x.nii.gz
@@ -285,25 +311,31 @@ Template building
 \begin{frame}
 \frametitle{Basic applications}
 \begin{itemize}
-\item ROI study of cortical thickness
+\item Quantify changes in cortical thickness in an individual.
 \pause 
-\item template-study of thickness/gmprob, FA, connectivity ... 
+\item Perform a template-based study of thickness, gray matter
+  probability, FA, rs connectivity ... 
 \pause
-\item multi-modality study of the relationship between modalities and
+\item Identify multivariate relationships between modalities and
   predictors.
 \pause
-\item bold fmri study of resting state connectivity.
+\item Single-subject BOLD fmri study of resting state connectivity.
 \pause
-\item asymmetry study of neuroanatomy.
+\item Asymmetry study of neuroanatomy.
 \pause
-\item dimensionality reduction to increase detection power.  
+\item In general, optimal dimensionality reduction to increase detection power.  
 \end{itemize}
 \end{frame}
 
 
+
 \begin{frame}
 \frametitle{Segmenting an image}
-standard ants call 
+See  examples/segmentation\_example.sh
+\lstinputlisting{segmentation_example_input.tex}
+\begin{center}
+\includegraphics[width=3.in]{../figures/r64sliceseg.jpg}
+\end{center}
 \end{frame}
 
 \begin{frame}
@@ -325,6 +357,12 @@ r16 thickness
 \frametitle{Meaning of parameters}
 what happens when i vary each parameter?
 \end{frame}
+
+\begin{frame}
+\frametitle{Template-based transformations}
+\includegraphics[width=4.5in]{../figures/car_example.pdf}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Mapping two images}
@@ -369,12 +407,37 @@ what is common?  brain
 \begin{frame}
 \frametitle{Longitudinal analysis with ANTs}
 script based 
+\end{frame} 
+
+\begin{frame}
+\frametitle{Time series / rsfMRI analysis with ANTs}
+See  examples/motioncorr\_example.sh
+\lstinputlisting{motioncorr_example_input.tex}
+\begin{itemize}
+\item mi --- mutual information metric 
+\pause
+\item Rigid --- use rigid map to the average with gradient step 0.05
+\pause
+\item other params --- smoothing, scale estimation, iterations ... 
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Time series / rsfMRI analysis with ANTs}
-script based 
+\includegraphics[width=2in]{../figures/rsfmri_discon.jpg}
+\includegraphics[width=2in]{../figures/rsfmri_smooth.jpg}
 \end{frame}
+
+\begin{frame}
+\frametitle{Time series / rsfMRI analysis with ANTs}
+\includegraphics[width=4in]{../figures/rsfmriplot1.pdf}
+\end{frame}
+
+\begin{frame}
+\frametitle{Time series / rsfMRI analysis with ANTs}
+\includegraphics[width=4in]{../figures/rsfmriplot2.pdf}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Statistical analysis with ANTs}

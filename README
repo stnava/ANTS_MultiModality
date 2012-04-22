@@ -1,0 +1,16 @@
+to compile the presentation
+
+0. run all the examples to make sure they work (optional)
+
+1.  go into the examples directory and type
+
+prepare_inputs_to_presentation
+
+which creates the tex input from the examples
+
+2. use cmake to generate the presentation pdf 
+
+mkdir bin
+cd bin
+ccmake ../  # type 'c' then 'g'
+
