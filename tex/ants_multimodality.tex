@@ -458,14 +458,44 @@ very different.
 \end{frame}
 
 \begin{frame}
-\frametitle{Landmark-based registration}
-Schoenemann examples affine + bspline 
+\frametitle{Multiple metrics driving registration}
+% face example and why we use LMs @ the same time as data 
+See  examples/registration\_mm\_example.sh
+\lstinputlisting{registration_mm_example_input.tex}
+\begin{center}
+\includegraphics[width=4in]{../figures/r64registrationmm.jpg}\newline
+{\bf fixed versus ... }
+\end{center}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Landmark-based registration 1}
+% Schoenemann examples affine + bspline 
+% face example and why we use LMs @ the same time as data 
+\begin{center}
+\includegraphics[width=4in]{../figures/landmarks.jpg}\newline
+{\bf .}
+\end{center}
 \end{frame}
 
 \begin{frame}
-\frametitle{Multiple metrics driving registration}
-face example and why we use LMs @ the same time as data 
+\frametitle{Landmark-based registration 2}
+% Schoenemann examples affine + bspline 
+% face example and why we use LMs @ the same time as data 
+See  examples/registration\_lm\_example.sh
+\lstinputlisting{registration_lm_example_input.tex}
 \end{frame}
+
+
+\begin{frame}
+\frametitle{Landmark-based registration 3}
+\begin{center}
+\includegraphics[width=4in]{../figures/r64registrationlm.jpg}\newline
+{\bf fixed versus ... }
+\end{center}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Template construction}
@@ -537,7 +567,13 @@ open data
 \item It is multi-platform and portable.
 \pause
 \item It can easily be modified for $+++$ different types of studies. 
-\pause
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Reproducibility}
+\Huge
+\begin{itemize}
 \item ANTs allows one to access the powers of both ITK and {\bf
     R}. 
 \pause
@@ -545,6 +581,18 @@ open data
   just ask .... Questions?
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Acknowledgements}
+\Large
+\begin{itemize}
+\item NIBIB for software development support under grant R01-EB006266-01.
+\item The ITK development team.
+\item Dr. Murray Grossman for pushing application development.
+\item The NLM for providing stimulus funding in support of ITKv4. 
+\end{itemize}
+\end{frame}
+
 
 
 \end{document}
