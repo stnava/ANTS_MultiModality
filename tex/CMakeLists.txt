@@ -14,7 +14,9 @@ file(
 
 
 add_latex_document( ants_multimodality.tex
-  INPUTS ants_multimodality.tex motioncorr_example_input.tex segmentation_example_input.tex
+  INPUTS ants_multimodality.tex motioncorr_example_input.tex
+  segmentation_example_input.tex  segmentation2_example_input.tex
+  thickness_example_input.tex registration_example_input.tex
   IMAGE_DIRS ../figures
   DEFAULT_PDF
   )

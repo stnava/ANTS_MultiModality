@@ -79,7 +79,7 @@ distributed under the\\
 % \end{frame}
 
 % \setbeamertemplate{background}{\includegraphics[width=\paperwidth]{../figures/ITKv4_transparent}}
-\setbeamertemplate{background}{\includegraphics[width=\paperwidth]{../figures/ants_background.pdf}}
+\setbeamertemplate{background}{\includegraphics[width=\paperwidth]{../figures/ants_background2.pdf}}
 
 
 \begin{frame}
@@ -339,24 +339,53 @@ See  examples/segmentation\_example.sh
 \end{frame}
 
 \begin{frame}
-\frametitle{Segmenting an image with two modalities}
-r16 plus an edge map ... 
-\end{frame}
+\frametitle{Segmenting an image with $N$ modalities}
+See  examples/segmentation2\_example.sh
+\lstinputlisting{segmentation2_example_input.tex}
+\begin{center}
+\includegraphics[width=3.in]{../figures/r64sliceseg2.jpg}
+\end{center}
+ \end{frame}
 
 \begin{frame}
 \frametitle{Meaning of parameters}
-what happens when i vary each parameter?
+What happens when i vary each parameter?
+\begin{alltt}
+-i priorprobabilityimages[3, inprob\%02d.nii.gz, k ]  \newline
+~~~~~vs.  \newline
+-i kmeans[ k ]
+\end{alltt}
+\begin{center}
+\includegraphics[width=3.in]{../figures/r64segparams.jpg}\newline
+Vary MRF param and K in k-means.
+\end{center}
 \end{frame}
 
 \begin{frame}
-\frametitle{Cortical thickness}
-r16 thickness 
+\frametitle{Cortical thickness from imaging data}
+See  examples/thickness\_example.sh
+\lstinputlisting{thickness_example_input.tex}
+\begin{center}
+\includegraphics[width=4.in]{../figures/r64thickness.jpg}
+\end{center}
+{\bf Can vary smoothness, priors on thickness, etc.  See help. }
 \end{frame}
 
-\begin{frame}
-\frametitle{Meaning of parameters}
-what happens when i vary each parameter?
-\end{frame}
+\centeredlargetext{white}{blue}{
+But isn't ANTs all about normalization?
+}
+
+\centeredlargetext{white}{blue}{
+But isn't ANTs all about registration?
+}
+
+\centeredlargetext{white}{blue}{
+But isn't ANTs all about mapping?
+}
+
+\centeredlargetext{white}{blue}{
+But isn't ANTs all about transformations and templates?
+}
 
 \begin{frame}
 \frametitle{Template-based transformations}
@@ -366,7 +395,16 @@ what happens when i vary each parameter?
 
 \begin{frame}
 \frametitle{Mapping two images}
-standard ants call 
+See  examples/registration\_example.sh
+\lstinputlisting{registration_example_input.tex}
+\end{frame}
+
+\begin{frame}
+\frametitle{Mapping two images}
+\begin{center}
+\includegraphics[width=3.in]{../figures/r64registration.jpg}
+\end{center}
+{\bf Can vary smoothness, metrics, etc.  See help. }
 \end{frame}
 
 \begin{frame}
