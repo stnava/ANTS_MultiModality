@@ -1,0 +1,6 @@
+
+for x in *example.sh ; do 
+  nm=` echo $x | cut -d '.' -f 1 ` 
+  grep fortex $x | cut -d '#' -f 1  > ../tex/${nm}_input.tex 
+done
+
