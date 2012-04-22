@@ -16,3 +16,4 @@ ImageMath $dim temp.nii.gz TileImages 2 temp.nii.gz ${out}.nii.gz
 ImageMath $dim temp.nii.gz PadImage temp.nii.gz -20
 ConvertToJpg temp.nii.gz ../figures/r${num}sliceseg2.jpg
 rm temp.nii.gz temp1.nii.gz temp2.nii.gz
+exit 0 

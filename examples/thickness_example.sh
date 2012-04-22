@@ -13,3 +13,4 @@ ImageMath $dim temp.nii.gz TileImages 2 temp.nii.gz  ${out}thickness.nii.gz
 ImageMath $dim temp.nii.gz PadImage temp.nii.gz -20
 ConvertToJpg temp.nii.gz ../figures/r${num}thickness.jpg
 rm temp.nii.gz
+exit 0

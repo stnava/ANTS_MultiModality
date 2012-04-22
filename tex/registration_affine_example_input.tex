@@ -1,0 +1,2 @@
+ANTS $dim -m  CC[$img1,$img2,1,4]  -t SyN[0.25]  -r Gauss[3,0] -o $out -i 0 --number-of-affine-iterations 1000x1000x500 
+WarpImageMultiTransform $dim $img2  ${out}.nii.gz  ${out}Affine.txt -R $img1 

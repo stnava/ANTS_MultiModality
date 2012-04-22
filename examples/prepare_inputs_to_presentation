@@ -1,6 +1,14 @@
-
+#! /bin/bash 
+if [[ ! -d output ]] ; then 
+  mkdir output 
+fi
 for x in *example.sh ; do 
-  nm=` echo $x | cut -d '.' -f 1 ` 
-  grep fortex $x | cut -d '#' -f 1  > ../tex/${nm}_input.tex 
+#  bash $x 
+#  if [[ $? == 0 ]] ; then 
+    nm=` echo $x | cut -d '.' -f 1 ` 
+    grep fortex $x | cut -d '#' -f 1  > ../tex/${nm}_input.tex 
+#  else 
+#    echo $x example failed ...
+#  fi
 done
 

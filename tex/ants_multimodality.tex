@@ -409,12 +409,52 @@ See  examples/registration\_example.sh
 
 \begin{frame}
 \frametitle{Meaning of parameters}
-what happens when i vary each parameter?
+\Large What happens when i vary each parameter?
+\begin{itemize}
+\item Robustness increases with regularization ( -r Gauss[6,3] $>$ -r
+  Gauss[3,0] )
+\pause
+\item Flexibility decreases with regularization ( -r Gauss[6,3] $<$ -r
+  Gauss[3,0] )
+\pause
+\item Robustness increases with correlation window ( -m CC[ . , . , 1
+  , 4 ] $<$  -m CC[ . , . , 1
+  , 6 ]  )  but computation time also increases
+\pause
+\item Details matter:  pre-processing, feature extraction, etc. 
+\pause
+\item Successful affine step is essential!!
+\pause
+\item Step-size increases stability but slows convergence ( SyN[ 0.1 ]
+  more stable than SyN[ 0.25 ] ).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Check the affine mapping between two images}
+See  examples/registration\_affine\_example.sh
+\lstinputlisting{registration_affine_example_input.tex}
+\begin{center}
+\includegraphics[width=4in]{../figures/r64registrationaffine.jpg}\newline
+{\bf fixed   versus affinely registered image versus original moving}
+\end{center}
 \end{frame}
 
 \begin{frame}
 \frametitle{Coordinates of computation time}
-2D MSQ to 3D CC
+\begin{Large}
+\begin{itemize}
+\item 2D 256$^2$ pixels intensity difference (MSQ) registration
+  $\approx$ \textcolor{red}{30 seconds}
+\pause
+\item 3D 256$^3$ voxels correlation-8 ( CC[ . , . , 1,
+8] ) could take \textcolor{red}{3 days} if you use full-resolution and the images are
+very different.
+\pause
+\item  or it could take \textcolor{red}{15 minutes} if you use low-resolution and the
+  images are very similar.
+\end{itemize}
+\end{Large}
 \end{frame}
 
 \begin{frame}
