@@ -9,6 +9,13 @@ ExtractSliceFromImage 3 ${out}_slice_corrected.nii.gz  ${out}_slice_corrected_x.
 ExtractSliceFromImage 3 ${out}_slice_original.nii.gz  ${out}_slice_original_x.nii.gz 1 22
 ConvertToJpg ${out}_slice_original_x.nii.gz ../figures/rsfmri_discon.jpg 
 ConvertToJpg ${out}_slice_corrected_x.nii.gz ../figures/rsfmri_smooth.jpg 
+
+#  ${AD}ThresholdImage 3 ${out}_avg.nii.gz  ${out}_bmask.nii.gz 300 9999 
+#  ${AD}ImageMath 3 ${out}_bmask.nii.gz GetLargestComponent ${out}_bmask.nii.gz 
+#  ${AD}ImageMath 4 ${out}compcorr.nii.gz CompCorrAuto ${out}.nii.gz ${out}_bmask.nii.gz 6
+#  ${AD}sccan --timeseriesimage-to-matrix [ ${out}compcorr_corrected.nii.gz , ${out}_bmask.nii.gz , 0 , 1.0 ] -o ${out}.csv
+#  ${AD}sccan --svd sparse[ ${out}.csv ,  ${out}_bmask.nii.gz , -0.05 ] -n 40 -i 20 --PClusterThresh 50 -o ${out}RSFNodes.nii.gz 
+
 exit
 
 # R stuff
