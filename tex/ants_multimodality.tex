@@ -330,7 +330,7 @@ Atropos -d 2 -a r16slice.nii.gz -x r16mask.nii.gz \newline
 
 
 \begin{frame}
-\frametitle{Segmenting an image}
+\frametitle{Segmenting anatomy from an image}
 See  examples/segmentation\_example.sh
 \lstinputlisting{segmentation_example_input.tex}
 \begin{center}
@@ -339,7 +339,7 @@ See  examples/segmentation\_example.sh
 \end{frame}
 
 \begin{frame}
-\frametitle{Segmenting an image with $N$ modalities}
+\frametitle{Multivariate anatomical segmentation}
 See  examples/segmentation2\_example.sh
 \lstinputlisting{segmentation2_example_input.tex}
 \begin{center}
@@ -390,6 +390,11 @@ But isn't ANTs all about transformations and templates?
 \begin{frame}
 \frametitle{Template-based transformations}
 \includegraphics[width=4.5in]{../figures/car_example.pdf}
+\end{frame}
+
+\begin{frame}
+\frametitle{How did we compute that transformation?}
+\lstinputlisting{cars.sh}
 \end{frame}
 
 
@@ -498,6 +503,19 @@ See  examples/registration\_lm\_example.sh
 
 
 \begin{frame}
+\frametitle{Other Landmark-based registration tools}
+\begin{itemize}
+\item for 3D
+\item ANTSUseLandmarkImagesToGetAffineTransform lm1.nii.gz lm2.nii.gz affine outaffine.txt
+\item ANTSUseLandmarkImagesToBSplineDisplacementField outLMWarp.nii.gz
+  10x10x10 6 3 0
+\item Then use WarpImageMultiTransform / antsApplyTransform to apply
+  the warp to the relevant image.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Template construction}
 group studies 
 \end{frame}
@@ -544,6 +562,30 @@ See  examples/motioncorr\_example.sh
 \begin{frame}
 \frametitle{Time series / rsfMRI analysis with ANTs}
 \includegraphics[width=4in]{../figures/rsfmriplot2.pdf}
+\end{frame}
+
+\begin{frame}
+\frametitle{Extracting a resting state network}
+   ImageMath 4 compcorr.nii.gz CompCorrAuto motioncorrected.nii.gz   brainmask 6
+   \newline
+   \newline
+   N3BiasFieldCorrection 3 imgavg imgavg 2 brainmask 
+   \newline
+   \newline
+  Atropos -d 3 -a imgavg -a compcorr\_variance.nii.gz -m  [0.3,1x1x1] -o [seg.nii.gz,prob\_ \%02d.nii.gz] -c [5,0] -i kmeans[3] -x brainmask 
+   \newline
+   \newline
+   ThresholdImage 3 prob\_02.nii.gz cortmask.nii.gz 0.1 1.0
+     \newline
+   \newline
+   sccan  --timeseriesimage-to-matrix [ motioncorrected.nii.gz,
+   cortmask.nii.gz, 5.0 , 0.0 ] -o out.csv 
+   \newline
+   \newline
+   sccan  --svd sparse[ out.csv, cortmask.nii.gz, -0.05 ] -n 40 -i 40  --PClusterThresh 100  -o RSF\_Nodes.nii.gz
+   \newline
+   \newline
+   Then build a graph ( see iGraph ).
 \end{frame}
 
 
