@@ -566,31 +566,9 @@ See  examples/motioncorr\_example.sh
 
 \begin{frame}
 \frametitle{Extracting a resting state network}
-   ThresholdImage 3 imgavg.nii.gz brainmask.nii.gz 1  1000 
-   \newline
-   \newline
-   ImageMath 3 brainmask.nii.gz GetLargestComponent brainmask.nii.gz 
-   \newline
-   \newline
-   ImageMath 4 compcorr.nii.gz CompCorrAuto motioncorrected.nii.gz   brainmask.nii.gz 6
-   \newline
-   \newline
-%   N3BiasFieldCorrection 3 imgavg imgavg 2 brainmask 
-%   \newline
-%   \newline
-%  Atropos -d 3 -a imgavg -a compcorr\_variance.nii.gz -m  [0.3,1x1x1] -o [seg.nii.gz,prob\_ \%02d.nii.gz] -c [5,0] -i kmeans[3] -x brainmask 
-%   \newline
-%   \newline
-%   ThresholdImage 3 prob\_02.nii.gz cortmask.nii.gz 0.1 1.0
-%     \newline
-%   \newline
-   sccan  --timeseriesimage-to-matrix [ motioncorrected.nii.gz,   brainmask.nii.gz, 5.0 , 0.0 ] -o out.csv 
-   \newline
-   \newline
-   sccan  --svd sparse[ out.csv, cortmask.nii.gz, -0.05 ] -n 40 -i 40  --PClusterThresh 100  -o RSF\_Nodes.nii.gz
-   \newline
-   \newline
-   Then build a graph ( see iGraph ).
+See  examples/rsfnodes\_example.sh
+\lstinputlisting{rsfnodes_example_input.tex}
+Then build a graph ( see iGraph ).
 \end{frame}
 
 
