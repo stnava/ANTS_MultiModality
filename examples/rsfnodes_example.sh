@@ -1,8 +1,8 @@
 
 img=data/rsfmri.nii.gz
 out=output/rsfmri
-if [[ -s ${out}_avg.nii.gz ]] ; then 
-  ThresholdImage 3 ${out}_avg.nii.gz  ${out}_bmask.nii.gz 300 9999 #fortex
+if [[ -s ${out}avg.nii.gz ]] ; then 
+  ThresholdImage 3 ${out}avg.nii.gz  ${out}_bmask.nii.gz 300 9999 #fortex
   ImageMath 3 ${out}_bmask.nii.gz GetLargestComponent ${out}_bmask.nii.gz #fortex
   ImageMath 4 ${out}compcorr.nii.gz CompCorrAuto ${out}.nii.gz ${out}_bmask.nii.gz 6 #fortex
   sccan --timeseriesimage-to-matrix [ ${out}compcorr_corrected.nii.gz , ${out}_bmask.nii.gz , 0 , 1.0 ] -o ${out}.csv #fortex
