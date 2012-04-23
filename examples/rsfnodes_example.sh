@@ -11,9 +11,13 @@ if [[ -s ${out}avg.nii.gz ]] ; then
   ThresholdImage 3 ${out}seg.nii.gz ${out}_bmask.nii.gz 3 3 
   ImageMath 4 ${out}compcorr.nii.gz CompCorrAuto ${out}.nii.gz ${out}_bmask.nii.gz 6 #fortex
   sccan --timeseriesimage-to-matrix [ ${out}compcorr_corrected.nii.gz , ${out}_bmask.nii.gz , 0 , 1.0 ] -o ${out}.csv #fortex
-  sccan --svd sparse[ ${out}.csv ,  ${out}_bmask.nii.gz , -0.05 ] -n 40 -i 20 --PClusterThresh 50 -o ${out}RSFNodes.nii.gz  #fortex
+  sccan --svd sparse[ ${out}.csv ,  ${out}_bmask.nii.gz , -0.05 ] -n 20 -i 10 --PClusterThresh 50 -o ${out}RSFNodes.nii.gz  #fortex
 fi
 exit
+# for display 
+
+MultiplyImages 3 output/rsfmriavg.nii.gz 0 temp.nii.gz
+ct=1 ; for x in output/rsfmriRSFNodesView1vec0*gz ; do ThresholdImage 3 $x temp2.nii.gz 1.e-6 999 ; MultiplyImages 3 temp2.nii.gz $ct temp2.nii.gz ; ImageMath 3 temp.nii.gz addtozero temp.nii.gz temp2.nii.gz ; let ct=$ct+1 ;  done 
 
 # R stuff
 dd<-read.csv('output/rsfmriMOCOparams.csv')
@@ -24,3 +28,31 @@ dev.off()
 pdf('../figures/rsfmriplot2.pdf',width=8,height=6); 
 plot(dd$MetricPost,ylab="Negative Correlation with Average",xlab="Time",cex=2,cex.lab=1.5,cex.axis=1.25,cex.main=2, lwd=2,lty=2,font=1,font.sub=2,font.main=2,font.lab=2,type="l",main="Outlier Rejection") ; 
 dev.off()
+
+
+
+# rsf networks 
+library(timeSeries)
+library(mFilter)
+compcorr<-read.csv('output/rsfmricompcorr_compcorr.csv')
+moco<-read.csv('output/rsfmriMOCOparams.csv')
+a<-read.csv('output/rsfmri.csv')
+a<-read.csv('output/rsfmriRSFNodesprojectionsView1vec.csv')
+mp<-as.matrix(moco)
+mp[,3:8]<-mp[,3:8]-mp[c(1,3:244,244),3:8]
+amat<-as.matrix(a)
+# regress out motion and compcorr stuff 
+amat<-residuals(lm(amat~1+mp+as.matrix(compcorr)))
+# now do frequency filtering 
+tr<-2 # a guess 
+myTimeSeries<-ts( amat ,  frequency<-1/tr )
+freqLo<-0.02
+freqHi<-0.1
+voxLo<-round(1/freqLo)
+voxHi<-round(1/freqHi)
+fTimeSeries<-residuals( cffilter( myTimeSeries , pl=voxHi, pu=voxLo , drift=TRUE , type="t")) # trig
+spec.pgram( myTimeSeries[ , 1 ] , taper = 0 , fast=T , detrend = F , demean = F , log="n" ) 
+im<-cor(amat)
+imr<-matrix( as.real( im > 0.25 ) ,nrow=20,ncol=20)
+heatmap( im , symm=T, Rowv=NA )
+heatmap( imr , symm=T, Rowv=NA )
