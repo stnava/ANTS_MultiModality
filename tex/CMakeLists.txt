@@ -16,7 +16,7 @@ file(
 add_latex_document( ants_multimodality.tex
   INPUTS ants_multimodality.tex motioncorr_example_input.tex
   segmentation_example_input.tex  segmentation2_example_input.tex
-  thickness_example_input.tex registration_example_input.tex
+  thickness_example_input.tex registration_example_input.tex btp_example_input.tex
   registration_affine_example_input.tex cars.sh rsfnodes_example_input.tex
   registration_mm_example_input.tex  registration_lm_example_input.tex
   IMAGE_DIRS ../figures
