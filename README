@@ -12,7 +12,7 @@ which creates the tex input from the examples
 
 mkdir bin
 cd bin
-cmake ../ ; make
+cmake ../ ; make ; cp ./tex/ants_multimodality.pdf ../
 
 # to add a new example , create the newexample_example.sh file in the examples dir, 
 # then go to CMakeLists.txt and add the tex filename under add_latex_document
