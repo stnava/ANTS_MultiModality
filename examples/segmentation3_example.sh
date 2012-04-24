@@ -16,5 +16,7 @@ for x in 1 2 3 ; do
   antsApplyTransforms -d 2 -i ${out}prob0${x}.nii.gz -o ${out}prob0${x}.nii.gz -t [${out}Affine.txt,1] -t ${out}InverseWarp.nii.gz -n Linear  -r $img2 #fortex
 #  SmoothImage 2 ${out}prob0${x}.nii.gz 1 ${out}prob0${x}.nii.gz 
 done
-N4BiasFieldCorrection -d $dim -i $img2 -o ${out}.nii.gz -x ${out}mk.nii.gz -s 1 -b [200] -c [20x20x20,0] #fortex
-Atropos -d $dim -a ${out}.nii.gz -x ${out}mk.nii.gz -m [ 0.1,1x1]   -c [10,0]  -i priorprobabilityimages[3,${out}prob%02d.nii.gz,0.0] -o [${out}.nii.gz,${out}prob%02d.nii.gz]  #fortex
+for x in 1 2 3 4  ; do #fortex
+  N4BiasFieldCorrection -d $dim -i $img2 -o ${out}.nii.gz -x ${out}mk.nii.gz -s 1 -b [200] -c [20x20x20,0] -w ${out}prob03.nii.gz #fortex
+  Atropos -d $dim -a ${out}.nii.gz -x ${out}mk.nii.gz -m [ 0.05,1x1]   -c [10,0]  -i priorprobabilityimages[3,${out}prob%02d.nii.gz,0.25] -o [${out}.nii.gz,${out}prob%02d.nii.gz]  #fortex
+done #fortex
