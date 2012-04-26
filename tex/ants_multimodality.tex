@@ -6,7 +6,8 @@
 \usepackage{url}
 \usepackage{verbatim}
 \usepackage{xcolor}
-
+\usecolortheme{lily}
+\usecolortheme{whale}
 \lstset{language=C++,numbersep=1pt,identifierstyle=\color{blue!50!black},commentstyle=\color{yellow!50!black},xleftmargin=7pt,numberblanklines=false,numberstyle=\color{red!60!black},numbers=left,basicstyle=\tiny\ttfamily,keywordstyle=\color{green!60!black}\bfseries,stringstyle=\color{red!80!black}}
 \lstset{frame=shadowbox, rulesepcolor=\color{blue},breaklines=true,numbersep=5pt,basicstyle=\small\ttfamily}
 \newcommand{\lstlistingwithnumber}[3]{
@@ -74,12 +75,19 @@ distributed under the\\
 }
 
 
-% \begin{frame}
-%  \tableofcontents[hideallsubsections]
-% \end{frame}
+\begin{frame}
+\tableofcontents[hideallsubsections]
+\end{frame}
 
 % \setbeamertemplate{background}{\includegraphics[width=\paperwidth]{../figures/ITKv4_transparent}}
 \setbeamertemplate{background}{\includegraphics[width=\paperwidth]{../figures/ants_background2.pdf}}
+
+\begin{frame}
+\frametitle{Simple hints for ...}
+\begin{center}
+\includegraphics[width=5.0in]{../figures/simplehints.jpg}
+\end{center}
+\end{frame}
 
 
 \begin{frame}
@@ -348,12 +356,12 @@ See  examples/segmentation2\_example.sh
  \end{frame}
 
 \begin{frame}
-\frametitle{Meaning of parameters}
+\frametitle{Meaning of segmentation parameters}
 What happens when i vary each parameter?
 \begin{alltt}
--i priorprobabilityimages[3, inprob\%02d.nii.gz, k ]  \newline
+-m [0.1,1x1] -m [0.2,1x1]  -m [0.5,1x1]  \newline
 ~~~~~vs.  \newline
--i kmeans[ k ]
+-i kmeans[ k ]  k = 2 , 3 , 4
 \end{alltt}
 \begin{center}
 \includegraphics[width=3.in]{../figures/r64segparams.jpg}\newline
@@ -420,12 +428,12 @@ See  examples/segmentation3\_example.sh
 % \begin{center}
 % \includegraphics[width=3.in]{../figures/r64sliceseg.jpg}
 % \end{center}
-What is the effect of N4?
+What is the effect of N4?  Should one loop over N4 and Atropos? 
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Meaning of parameters}
+\frametitle{Meaning of ANTs registration parameters}
 \Large What happens when i vary each parameter?
 \begin{itemize}
 \item Robustness increases with regularization ( -r Gauss[6,3] $>$ -r
@@ -519,7 +527,7 @@ See  examples/registration\_lm\_example.sh
 \begin{itemize}
 \item for 3D
 \item ANTSUseLandmarkImagesToGetAffineTransform lm1.nii.gz lm2.nii.gz affine outaffine.txt
-\item ANTSUseLandmarkImagesToBSplineDisplacementField outLMWarp.nii.gz
+\item ANTSUseLandmarkImagesToBSplineDisplacementField lm1.nii.gz lm2.nii.gz outLMWarp.nii.gz
   10x10x10 6 3 0
 \item Then use WarpImageMultiTransform / antsApplyTransform to apply
   the warp to the relevant image.
@@ -531,14 +539,62 @@ See  examples/registration\_lm\_example.sh
 \frametitle{Template construction}
 See examples/btp\_example.sh
 \lstinputlisting{btp_example_input.tex}
-Add figure of subjects
-\end{frame}
+\begin{center}
+\includegraphics[width=4in]{../figures/phantoms.jpg}\newline
+{\bf all ``subjects'' }
+\end{center}
+ \end{frame}
+% \transdissolve
+\begin{frame}
+\transdissolve
+\frametitle{Template construction output}
+\begin{center}
+\includegraphics[width=4in]{../figures/phantoms1.jpg}\newline
+{\bf subjects after iteration 1 }
+\end{center}
+ \end{frame}
+
+\begin{frame}
+\transdissolve
+\frametitle{Template construction output}
+\begin{center}
+\includegraphics[width=4in]{../figures/phantoms2.jpg}\newline
+{\bf subjects after iteration 2 }
+\end{center}
+ \end{frame}
+
+
+\begin{frame}
+\transdissolve
+\frametitle{Multi-template labeling}
+\lstinputlisting{btp2_example_input.tex}
+\begin{center}
+\includegraphics[width=4in]{../figures/phantomtemplate.jpg}\newline
+{\bf The template and its groupwise segmentation.}
+\end{center}
+ \end{frame}
 
 \begin{frame}
 \frametitle{Identifying local predictors of global differences}
-$ \text{volume}_{\text{global} \approx 1 +
+$ \text{volume}_{\text{global}} \approx 1 +
   \text{volume}_{\text{local}} $
 \end{frame}
+
+\begin{frame}
+\transdissolve
+\frametitle{And now .... voxel-wise statistics}
+\lstinputlisting{btp3_example_input.tex}
+then use {\bf R} ... 
+\end{frame}
+
+\begin{frame}
+\transdissolve
+\frametitle{And now .... voxel-wise statistics}
+\lstset{language=R}
+\lstinputlisting{antsrstatistics.tex}
+\lstset{language=C++}
+\end{frame}
+
 
 % \begin{frame}
 % \frametitle{Templates for asymmetry analysis}
@@ -591,11 +647,12 @@ See  examples/rsfnodes\_example.sh
 Then build a graph ( see iGraph ).
 \end{frame}
 
-
-\begin{frame}
-\frametitle{Statistical analysis with ANTs}
-script based 
-\end{frame}
+%
+% \begin{frame}
+% \frametitle{Statistical analysis with ANTs}
+% script based 
+% \end{frame}
+%
 
 \begin{frame}
 \frametitle{How does structure and functional connectivity elaborate during development?}

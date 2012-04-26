@@ -1,0 +1,31 @@
+
+predictor<-read.csv("data/phantpredictors.csv")
+predictor<-read.csv("templateex/globalvols.csv")
+logjac<-read.csv("templateex/phantomlogjacs.csv")
+
+attach( logjac ) ; attach( predictor )
+
+nvox<-ncol(logjac)
+
+pvals<-rep(NA,nvox)
+
+for ( x in c(1:nvox) ) 
+{ 
+
+  voxels<-logjac[,x]
+
+  lmres<-summary(lm( voxels ~  vol ))
+
+  coeff<-coefficients( lmres )
+
+  pval<-coeff[2,4]
+
+  pvals[x]<-pval
+
+}
+qvals<-p.adjust(pvals)
+print(min(qvals))
+write.csv(1-qvals,'templateex/qvals.csv')
+
+ sccan --vector-to-image [ templateex/qvals.csv , templateex/mask.nii.gz , 1] -o temp.nii.gz
+

@@ -8,15 +8,16 @@ project(ants_multimodality)
 #  This CXX_FILES variable is populated in the top CMakeLists.txt file
 #
 file(
-  COPY  ${CXX_FILES}
+  COPY  ${CXX_FILES} 
   DESTINATION ${ants_multimodality_BINARY_DIR}
   )
 
 
-add_latex_document( ants_multimodality.tex
-  INPUTS ants_multimodality.tex motioncorr_example_input.tex
+add_latex_document( ants_multimodality.tex 
+  INPUTS ants_multimodality.tex motioncorr_example_input.tex antsrstatistics.tex
   segmentation_example_input.tex  segmentation2_example_input.tex segmentation3_example_input.tex
-  thickness_example_input.tex registration_example_input.tex btp_example_input.tex
+  thickness_example_input.tex registration_example_input.tex
+  btp_example_input.tex btp2_example_input.tex  btp3_example_input.tex
   registration_affine_example_input.tex cars.sh rsfnodes_example_input.tex
   registration_mm_example_input.tex  registration_lm_example_input.tex
   IMAGE_DIRS ../figures

@@ -1,0 +1,6 @@
+  for x in ../data/phantom*wmgm.jpg ; do 
+    ThresholdImage 2 PHtemplateseg.nii.gz  mask.nii.gz 127 300  
+      ANTSJacobian 2 $x phantom${ct} 1 mask.nii.gz 0  
+      SmoothImage 2 phantom${ct}logjacobian.nii.gz 1.0  phantom${ct}logjacobian.nii.gz 
+    ls phantom*logjacobian.nii.gz > list.txt   
+    sccan --imageset-to-matrix [list.txt,mask.nii.gz] -o phantomlogjacs.csv   
