@@ -14,7 +14,8 @@ file(
 
 
 add_latex_document( ants_multimodality.tex 
-  INPUTS ants_multimodality.tex motioncorr_example_input.tex antsrstatistics.tex
+  INPUTS ants_multimodality.tex motioncorr_example_input.tex
+  antsrstatistics.tex dti.tex
   segmentation_example_input.tex  segmentation2_example_input.tex segmentation3_example_input.tex
   thickness_example_input.tex registration_example_input.tex
   btp_example_input.tex btp2_example_input.tex  btp3_example_input.tex
