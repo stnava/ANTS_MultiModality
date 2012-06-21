@@ -1,2 +1,2 @@
 antsMotionCorr  -d 3 -a $img -o ${out}avg.nii.gz  
-antsMotionCorr  -d 3 -o [${out},${out}.nii.gz,${out}avg.nii.gz] -m mi[ ${out}avg.nii.gz , $img , 1 , 32 , Regular, 0.01 ]  -t Rigid[ 0.05 ] -i 100 -u 1 -e 1 -s 0.0 -f 1 -n 10 
+antsMotionCorr  -d 3 -o [${out},${out}.nii.gz,${out}avg.nii.gz] -m mi[ ${out}avg.nii.gz , $img , 1 , 32 , Regular, 0.05 ]  -t Rigid[ 0.5 ] -i 25 -u 1 -e 1 -s 0.0 -f 1 -n 10 

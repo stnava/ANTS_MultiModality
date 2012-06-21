@@ -1,6 +1,8 @@
 to compile the presentation
 
 0. run all the examples to make sure they work (optional)  --- you need to have ANTS binaries in your path for this work.
+   
+   examples should be run from within the examples directory
 
 1.  go into the examples directory and type
 

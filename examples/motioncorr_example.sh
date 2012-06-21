@@ -3,7 +3,7 @@ img=data/rsfmri.nii.gz
 out=output/rsfmri
 antsMotionCorr  -d 3 -a $img -o ${out}avg.nii.gz  #fortex
 ExtractSliceFromImage 4 $img ${out}_slice_original.nii.gz 0 32
-antsMotionCorr  -d 3 -o [${out},${out}.nii.gz,${out}avg.nii.gz] -m mi[ ${out}avg.nii.gz , $img , 1 , 32 , Regular, 0.01 ]  -t Rigid[ 0.05 ] -i 100 -u 1 -e 1 -s 0.0 -f 1 -n 10 #fortex
+antsMotionCorr  -d 3 -o [${out},${out}.nii.gz,${out}avg.nii.gz] -m mi[ ${out}avg.nii.gz , $img , 1 , 32 , Regular, 0.05 ]  -t Rigid[ 0.5 ] -i 25 -u 1 -e 1 -s 0.0 -f 1 -n 10 #fortex
 ExtractSliceFromImage 4 ${out}.nii.gz ${out}_slice_corrected.nii.gz 0 32
 ExtractSliceFromImage 3 ${out}_slice_corrected.nii.gz  ${out}_slice_corrected_x.nii.gz 1 22
 ExtractSliceFromImage 3 ${out}_slice_original.nii.gz  ${out}_slice_original_x.nii.gz 1 22
