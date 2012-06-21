@@ -1,0 +1,78 @@
+% Copyright 2007 by Till Tantau
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+%
+% See the file doc/licenses/LICENSE for more details.
+
+
+
+\documentclass{beamer}
+
+%
+% DO NOT USE THIS FILE AS A TEMPLATE FOR YOUR OWN TALKS¡!!
+%
+% Use a file in the directory solutions instead.
+% They are much better suited.
+%
+
+
+% Setup appearance:
+
+\usetheme{Darmstadt}
+\usefonttheme[onlylarge]{structurebold}
+\setbeamerfont*{frametitle}{size=\normalsize,series=\bfseries}
+\setbeamertemplate{navigation symbols}{}
+
+
+% Standard packages
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{graphics}
+
+% Setup TikZ
+
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\tikzstyle{block}=[draw opacity=0.7,line width=1.4cm]
+
+
+% Author, Title, etc.
+
+
+
+
+% The main document
+
+\begin{document}
+
+\begin{frame}{Processing of diffusion tensor data.}
+  \begin{enumerate}
+  \item Intra-subject matching ( FA -> T1 )
+  \item Compose warps for template space warp
+  \item Warp and reorient with preservation of principal direction
+  \item Get derived images (FA, MD, RGB, etc)
+    principal direction )
+  \end{enumerate}
+
+  \begin{center}
+  \begin{table}
+  \begin{tabular}{ c c c }
+  \includegraphics[width=1.23in]{../figures/fa_sub.png} &
+  \includegraphics[width=1.25in]{../figures/t1_sub.png} &
+  \includegraphics[width=1.25in]{../figures/overlay_template.png} \\
+  Subject FA & Subject T1 & Aligned composite \\
+  \end{tabular}
+  \end{table}
+  \end{center}
+
+\end{frame}
+
+\end{document}
+
+
