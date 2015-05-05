@@ -1,3 +1,14 @@
+## for the rmd 
+
+open ants_multimodality.Rmd in Rstudio, then knit the pdf
+
+you will have some missing files - these are due to the hardcoded paths.
+
+change these and it should work.  
+
+
+## for the beamer
+
 to compile the presentation
 
 0. run all the examples to make sure they work (optional)  --- you need to have ANTS binaries in your path for this work.
