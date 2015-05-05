@@ -4,8 +4,7 @@ open ants_multimodality.Rmd in Rstudio, then knit the pdf
 
 you will have some missing files - these are due to the hardcoded paths.
 
-change these and it should work.  
-
+the variable to change is `bd=...`
 
 ## for the beamer
 
