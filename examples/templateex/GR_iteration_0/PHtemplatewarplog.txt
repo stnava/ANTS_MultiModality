@@ -1,0 +1,4 @@
+PHtemplatewarp.nii.gz Max : [1.02406, 0.203768] Min : [0, 0] Mean : [0.145483, 0.126997]
+PHtemplatewarp.nii.gz Max : [1.68065, 0.167018] Min : [0, 0] Mean : [0.0941009, 0.0483335]
+PHtemplatewarp.nii.gz Max : [0.728666, 0.0752784] Min : [0, 0] Mean : [0.0430134, 0.0367112]
+PHtemplatewarp.nii.gz Max : [1.01965, 0.196343] Min : [0, 0] Mean : [0.143897, 0.126118]
