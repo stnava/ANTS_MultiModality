@@ -493,14 +493,16 @@ print( sccaner$eig2 )
 
 ## ANTs multivariate voxel-wise statistics
 
-```{r sccaner3}
-plot( phseg, sccaner$eig1[[1]] , window.img=c(0,Inf))
+```{r sccaner3,echo=FALSE}
+plot( phseg, iMath( sccaner$eig1[[1]]^2,"Normalize"),
+      window.img=c(0,Inf), window.overlay=c(0.1,1))
 ```
 
 ## ANTs multivariate voxel-wise statistics
 
 ```{r sccaner4}
-plot( phseg, sccaner$eig1[[2]] , window.img=c(0,Inf))
+plot( phseg, iMath( sccaner$eig1[[2]]^2,"Normalize"),
+      window.img=c(0,Inf), window.overlay=c(0.1,1))
 ```
 
 Now we can compare to standard voxel-wise statistics using *R* ...
