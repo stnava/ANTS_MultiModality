@@ -1,7 +1,7 @@
 ---
 title: "Multi-modality processing with Advanced Normalization Tools (ANTs)"
 author: "Brian Avants, PICSL and the ANTs Development Team"
-date: "May X 2015"
+date: "May XX 2015"
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -32,7 +32,6 @@ output:
 library(ANTsR)
 library(knitr)
 bd="/Users/stnava/Documents/writing/ANTS_MultiModality/"
-bd="/Users/stnava/Downloads/ANTS_MultiModality/"
 ```
 
 ##
@@ -324,7 +323,7 @@ img=n4BiasFieldCorrection( img )
 mask<-getMask( img )
 segs<-kmeansSegmentation( img, k=3, kmask = mask)
 thk<-kellyKapowski( s=segs$segmentation, g=segs$probabilityimages[[2]],
-       w=segs$probabilityimages[[3]],its=45, r=0.5, m=1 )
+       w=segs$probabilityimages[[3]],its=45, r=0.2, m=1 )
 ```
 Can vary smoothness, priors on thickness, etc.  See help.
 
@@ -551,11 +550,10 @@ $$ \text{volume}_{\text{local}} \approx 1 +
 ## ANTs multivariate voxel-wise statistics
 
 ```{r sccaner1setup,echo=FALSE,results='hide'}
-setwd(bd)
-lbd=paste(getwd(),"/examples/",sep='')
-dx=data.matrix( read.csv(paste(lbd,"data/phantpredictors.csv",sep='')) )
+lbd=paste(bd,"/examples/",sep='')
+dx=data.matrix( read.csv(paste(lbd,"/data/phantpredictors.csv",sep='') ) )
 predictor2<-data.matrix( read.csv(paste(lbd,"templateex/globalvols.csv",sep='')) )
-jbd=paste(getwd(),"/examples/data/jacstudy/",sep='')
+jbd=paste(bd,"/examples/data/jacstudy/",sep='')
 ```
 
 ```{r sccaner1}
