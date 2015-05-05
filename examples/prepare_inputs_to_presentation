@@ -3,12 +3,13 @@ if [[ ! -d output ]] ; then
   mkdir output 
 fi
 for x in *example.sh ; do 
-#  bash $x 
-#  if [[ $? == 0 ]] ; then 
+  bash $x 
+  if [[ $? == 0 ]] ; then 
     nm=` echo $x | cut -d '.' -f 1 ` 
     grep fortex $x | cut -d '#' -f 1  > ../tex/${nm}_input.tex 
-#  else 
-#    echo $x example failed ...
-#  fi
+  else 
+    echo $x example failed ...
+    exit
+  fi
 done
 cp antsrstatistics.tex ../tex/

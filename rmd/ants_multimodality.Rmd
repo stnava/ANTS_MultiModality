@@ -1,0 +1,665 @@
+---
+title: "Multi-modality processing with Advanced Normalization Tools (ANTs)"
+author: "Brian Avants, PICSL and the ANTs Development Team"
+date: "May X 2015"
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    highlight: zenburn
+    incremental: yes
+    theme: AnnArbor
+    toc: yes
+  ioslides_presentation:
+    highlight: zenburn
+    incremental: yes
+  revealjs::revealjs_presentation:
+    center: yes
+    fig_width: 12
+    highlight: zenburn
+    incremental: yes
+    pandoc_args:
+    - --slide-level
+    - '2'
+    self_contained: no
+    smaller: no
+    theme: night
+    transition: fade
+    widescreen: yes
+---
+
+```{r setup,echo=FALSE}
+library(ANTsR)
+library(knitr)
+setwd("/Users/stnava/Documents/writing/ANTS_MultiModality")
+```
+
+##
+
+This presentation is copyrighted by
+
+The **ANTs software consortium**
+
+distributed under the
+
+[Creative Commons by Attribution License 3.0](http://creativecommons.org/licenses/by/3.0)
+
+# Background and basics
+
+## Simple hints for ...
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/simplehints.jpg)
+
+
+## People
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/ants_contributors.pdf)
+
+## History: Theory
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/ants_history_t.pdf)
+
+## History: Implementation
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/ants_history.pdf)
+
+## Download ANTs binaries
+
+\Large
+
+* Go to: [http://stnava.github.io/ANTs/](http://stnava.github.io/ANTs/)
+* You will see links for documentation, code, binaries.
+* From the ANTs release page, select a specific release, e.g.: [2.1](https://github.com/stnava/ANTs/releases/tag/v2.1.0)
+* Select the right version for your platform.
+
+## Download ANTsR binaries
+
+\Large
+
+* Go to: [http://stnava.github.io/ANTsR/](http://stnava.github.io/ANTsR/)
+* You will see links for documentation, code, binaries.
+* Select the latest release for your platform then:
+* `R CMD INSTALL ANTsR*tar.gz`
+
+## Install ANTs from source: Requires  git, cmake, C++
+
+open a terminal window and then type
+
+```
+$>$ git clone http://github.com/stnava/ANTs.git
+
+$>$  mkdir bin
+
+$>$  cd bin/
+
+$>$  ccmake ../ANTS/
+```
+
+## Install ANTs from source: Requires  git/svn, cmake, C++
+
+then, in cmake, type **c** and then **g**  then exit back to the
+terminal.   then:
+
+```
+$>$  make -j 4
+```
+
+and wait a while.
+
+# ANTs Software Summary
+
+## Overview:  Program $+$ brief description
+
+```{r antsprogs,echo=FALSE,results='asis'}
+antsdf=data.frame(
+Tool=c("ANTS",
+"antsRegistration",
+"Atropos",
+"N4BiasFieldCorr",
+"ImageMath",
+ "buildtemplateparallel",
+ "WarpImageMultiTrans",
+ "antsApplyTransforms",
+ "KellyKapowski",
+ "sccan",
+ "antsMotionCorr"),
+Description=c(
+"Interface to variety of registration algorithms",
+"ITKv4 update to ANTS",
+"Multivariate probabilitic EM segmentation",
+"Novel inhomogeneity field correction method",
+"Basic operations on images.",
+"Optimal templates in the diffeomorphic space.",
+"Concatenates ANTS/ITK transforms",
+"Concatenates ANTS/ITK transforms",
+"Cortical thickness directly from imaging",
+"Multivariate dimensionality reduction",
+"Motion correction and more for space-time images"),
+Highlights=c(
+"Frequent winner in registration competitions.",
+"Takes full advantage of multicore processing.",
+"Can integrate information from multiple modalities.",
+"New standard in inhomogeneity correction.",
+"Works on 2D, 3D, 4D images.",
+"New multimodality implementation.",
+"Can string together a series of N transforms.",
+"Can string together a series of N transforms.",
+"Multi-platform volumetric alternative to Freesurfer",
+"DimRed methods improve detection power in imaging.",
+"Rigid, affine, deformable motion correction."),
+PrimaryReference=c(
+"A reproducible evaluation of ANTs similarity metric performance in brain image registration",
+"A unified registration framework for ITK.",
+"An open source multivariate framework for n-tissue segmentation with evaluation on public data.",
+"N4ITK: improved N3 bias correction.",
+"—",
+"The optimal template effect in hippocampus studies of diseased population",
+"-","-",
+"Registration based cortical thickness measurement.",
+"Dementia induces correlated reductions in white matter integrity and cortical thickness: a multivariate neuroimaging study with sparse canonical correlation analysis.",
+"The pediatric template of brain perfusion")
+)
+knitr::kable(antsdf[,c(1,2)])
+```
+
+
+## Overview:  Program $+$ brief highlights
+
+```{r antsprogs2,echo=FALSE,results='asis'}
+knitr::kable(antsdf[,c(1,3)])
+```
+
+## Overview:  Program $+$ primary reference
+
+```{r antsprogs3,echo=FALSE,results='asis'}
+knitr::kable(antsdf[,c(1,4)])
+```
+
+
+## ANTs is good for scripting large-scale studies
+
+## App-like framework
+
+* ANTs likes short bash scripts
+
+* Longer scripts should use R, ANTsR or perl
+
+* `#! /usr/bin/Rscript`
+
+
+## The Basic Toolset
+
+* Registration: Data is in Examples/Data
+
+```bash
+ANTS 2 -m  CC[r16slice.nii.gz,r64slice.nii.gz,1,4] 
+ -t SyN[0.25]  -r Gauss[3,0] -o TEST -i 50x40x30
+```
+
+* Segmentation
+```bash
+Atropos -d 2 -a r16slice.nii.gz -x r16mask.nii.gz 
+-m [0.1,1x1]   -c [10,0]  -i kmeans[3]
+-o [Output.nii.gz,Output\_prob\_\%02d.nii.gz]
+```
+* Template building
+```bash
+  buildtemplateparallel.sh -d 3 -m 30x50x20 
+-t GR  -s CC -c 1 -o OutPrefix  *ImageName*T1x.nii.gz
+```
+
+ants-essential tools:  a mapping, a segmentation, a template and then label-guided and multivariate versions of these.
+
+## Basic applications
+
+* Quantify changes in cortical thickness in an individual.
+
+*  Perform a template-based study of thickness, gray matter
+  probability, FA, rs connectivity ...
+
+*  Identify multivariate relationships between modalities and
+  predictors.
+
+*  Single-subject BOLD fmri study of resting state connectivity.
+
+*  Asymmetry study of neuroanatomy.
+
+*  In general, optimal dimensionality reduction to increase detection power.
+
+
+## Segmenting anatomy from an image
+
+```{r child = '/Users/stnava/Documents/writing/ANTS_MultiModality/rmd/segmentation_example_input.Rmd'}
+```
+
+## Segmenting anatomy from an image: *ANTsR*
+
+```{r antsrseg}
+fi<-antsImageRead( getANTsRData("r16") )
+fi<-n4BiasFieldCorrection( fi, 4 )
+seg<-kmeansSegmentation( fi, 3 )
+```
+
+## Segmenting anatomy from an image: *ANTsR*
+
+```{r antsrseg2}
+plot(fi)
+```
+
+## Segmenting anatomy from an image: *ANTsR*
+
+```{r antsrseg3}
+plot(seg$segmentation)
+```
+
+
+## Segmenting anatomy from an image
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/r64sliceseg.jpg)
+
+## Multivariate anatomical segmentation
+
+```{r mvar,eval=FALSE}
+img <- antsImageRead( getANTsRData("r16") )
+mask = getMask(img)
+limg = iMath(img,"Laplacian")
+gimg = iMath(img,"Grad")
+feats <- list( img, limg, gimg )
+segs3 <- atropos( a = feats, m = '[0.2,1x1]',
+        c = '[2,0]',  i = 'kmeans[3]', x = mask )
+```
+
+## Multivariate anatomical segmentation
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/r64sliceseg2.jpg)
+
+## Meaning of segmentation parameters
+\Large
+What happens when i vary each parameter?
+
+* `-m [0.1,1x1] -m [0.2,1x1]  -m [0.5,1x1]`
+* `-i kmeans[ k ]` for `k = 2 , 3 , 4`
+
+
+## Meaning of segmentation parameters
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/r64segparams.jpg)
+
+Vary MRF param and K in k-means.
+
+
+## Cortical thickness from imaging data
+
+```{r child = '/Users/stnava/Documents/writing/ANTS_MultiModality/rmd/thickness_example_input.Rmd'}
+```
+
+## Cortical thickness from imaging data
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/r64thickness.jpg)
+
+ Can vary smoothness, priors on thickness, etc.  See help.
+
+# ANTs registration
+
+## Template-based transformations
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/car_example.pdf)
+
+
+## How did we compute that transformation?
+
+see the web example [http://stnava.github.io/cars/](http://stnava.github.io/cars/)
+
+## Mapping two images
+
+```{r child = '/Users/stnava/Documents/writing/ANTS_MultiModality/rmd/registration_example_input.Rmd'}
+```
+
+## Mapping two images
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/r64registration.jpg)
+
+**Can vary smoothness, metrics, etc.  See help.**
+
+
+## Segmenting anatomy with spatial priors
+
+```{r child = '/Users/stnava/Documents/writing/ANTS_MultiModality/rmd/segmentation3_example_input.Rmd'}
+```
+
+What is the effect of N4?  Should one loop over N4 and Atropos?
+
+
+## Meaning of ANTs registration parameters
+
+What happens when i vary each parameter?
+
+*  Robustness increases with regularization 
+  * ` -r Gauss[6,3] $>$ -r Gauss[3,0] `
+
+*  Flexibility decreases with regularization 
+  * ` -r Gauss[6,3] $<$ -r Gauss[3,0] `
+
+*  Robustness increases with correlation window 
+  * ` -m CC[ . , . , 1 , 4 ]` $<$  `-m CC[ . , . , 1 , 6 ]  ` 
+  * but computation time also increases
+
+*  Details matter:  pre-processing, feature extraction, etc.
+
+*  Successful affine step is essential!!
+
+*  Step-size increases stability but slows convergence 
+  * ` SyN[ 0.1 ]` more stable than `SyN[ 0.25 ] `.
+
+
+## Check the affine mapping between two images
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/r64registrationaffine.jpg)
+
+**fixed versus affinely registered image versus original moving**
+
+
+## Coordinates of computation time
+
+*  2D 256$^2$ pixels intensity difference (MSQ) registration
+  $\approx$ \textcolor{red}{30 seconds}
+
+*  3D 256$^3$ voxels correlation-8 ( CC[ . , . , 1,
+8] ) could take \textcolor{red}{3 days} if you use full-resolution and the images are
+very different.
+
+*   or it could take \textcolor{red}{15 minutes} if you use low-resolution and the
+  images are very similar.
+
+
+## Multiple metrics driving registration
+
+```{r child = '/Users/stnava/Documents/writing/ANTS_MultiModality/rmd/registration_mm_example_input.Rmd'}
+```
+
+## Multiple metrics driving registration
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/r64registrationmm.jpg)
+ 
+fixed versus ... 
+ 
+
+## Landmark-based registration 1
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/landmarks.jpg)
+
+
+
+## Landmark-based registration 2
+
+```{r child = '/Users/stnava/Documents/writing/ANTS_MultiModality/rmd/registration_lm_example_input.Rmd'}
+```
+
+
+## Landmark-based registration 3
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/r64registrationlm.jpg)
+
+
+## Other Landmark-based registration tools
+
+*  for 3D
+*  ANTSUseLandmarkImagesToGetAffineTransform lm1.nii.gz lm2.nii.gz affine outaffine.txt
+*  ANTSUseLandmarkImagesToBSplineDisplacementField lm1.nii.gz lm2.nii.gz outLMWarp.nii.gz
+  10x10x10 6 3 0
+*  Then use WarpImageMultiTransform / antsApplyTransform to apply
+  the warp to the relevant image.
+
+
+# Template based studies
+
+## Template construction
+
+```{r child = '/Users/stnava/Documents/writing/ANTS_MultiModality/rmd/btp_example_input.Rmd'}
+```
+
+
+## Template construction
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/phantoms.jpg)
+
+all ``subjects'' 
+ 
+## Template construction output
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/phantoms1.jpg)
+ 
+subjects after iteration 1 
+ 
+
+## Template construction output
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/phantoms2.jpg)
+
+subjects after iteration 2 
+
+## Multi-template labeling
+
+```{r child = '/Users/stnava/Documents/writing/ANTS_MultiModality/rmd/btp2_example_input.Rmd'}
+```
+
+## Multi-template labeling
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/phantomtemplate.jpg)
+
+The template and its groupwise segmentation.
+ 
+# Population statistics
+
+## Identifying local predictors of global differences
+
+
+$$ \text{volume}_{\text{local}} \approx 1 +
+  \text{volume}_{\text{global}} $$
+
+
+## ANTs multivariate voxel-wise statistics
+
+```{r sccaner1setup,echo=FALSE,results='hide'}
+setwd("/Users/stnava/Documents/writing/ANTS_MultiModality")
+bd=paste(getwd(),"/examples/",sep='')
+dx=data.matrix( read.csv(paste(bd,"data/phantpredictors.csv",sep='')) )
+predictor2<-data.matrix( read.csv(paste(bd,"templateex/globalvols.csv",sep='')) )
+bd=paste(getwd(),"/examples/data/jacstudy/",sep='')
+```
+
+```{r sccaner1}
+phseg=antsImageRead( paste(bd,"PHtemplateseg.nii.gz",sep='') )
+mask=thresholdImage( phseg, 1, 1 )
+jlist=list()
+for ( x in Sys.glob( paste(bd,"PH*mWarp.nii.gz",sep='') ) ) {
+  jac = createJacobianDeterminantImage(mask,x,1)
+  jlist = lappend( jlist, jac %>% smoothImage(0.5) )
+  }
+mat=imageListToMatrix( jlist, mask )
+```
+
+
+## ANTs multivariate voxel-wise statistics
+
+```{r sccaner2}
+mats=list( mat, cbind( dx, predictor2 ) )
+sccaner=sparseDecom2( mats, c(mask,NA), 
+  sparseness = c( 0.2, -1 ),
+  nvecs=2, its=10, perms=200, 
+  cthresh=c(50,0), mycoption = 0 )
+print( sccaner$ccasummary )
+print( sccaner$eig2 )
+```
+
+## ANTs multivariate voxel-wise statistics
+
+```{r sccaner3}
+plot( phseg, sccaner$eig1[[1]] , window.img=c(0,Inf))
+```
+
+## ANTs multivariate voxel-wise statistics
+
+```{r sccaner4}
+plot( phseg, sccaner$eig1[[2]] , window.img=c(0,Inf))
+```
+
+Now we can compare to standard voxel-wise statistics using *R* ...
+
+
+##  .... voxel-wise statistics in *R*
+
+```{r antsrstats}
+lmres<-lm( mat ~  dx + predictor2  )
+blmres=bigLMStats( lmres )
+pvals1=blmres$beta.pval[1,]
+qvals1<-p.adjust(pvals1,'BH')
+pvals2=blmres$beta.pval[2,]
+qvals2<-p.adjust(pvals2,'BH')
+print( paste(  min( qvals1 ) , min( qvals2 ) ) )
+```
+
+
+##  .... voxel-wise statistics in *R*
+
+```{r antsrstats1,echo=FALSE}
+pimg=makeImage( mask, 1-qvals2 )
+plot( phseg, pimg, window.img=c(0,2), window.overlay=c(0.95,1) )
+```
+
+
+
+##  .... voxel-wise statistics in *R*
+
+```{r antsrstats2}
+lmres<-lm( mat ~  dx  + predictor2 + rowMeans(mat) )
+blmres=bigLMStats( lmres )
+pvals1=blmres$beta.pval[1,]
+qvals1<-p.adjust(pvals1,'BH')
+pvals2=blmres$beta.pval[2,]
+qvals2<-p.adjust(pvals2,'BH')
+print( paste(  min( qvals1 ) , min( qvals2 ) ) )
+```
+
+
+## Comparison of results
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/phantomstats.jpg)
+ SCCAN p-value $\approx 0.003$ minimum FDR-corrected p-value $\approx
+  0.009$ but results are similar.  FDR threshold $=0.05$.
+
+
+# Multiple modality processing
+
+## Templates for all modalities
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/templatesx3.jpg)
+**Templates for the same population T1, FA and BOLD.**
+
+We exploit population templates to extract the brain and
+set-up modality specific brain extraction and segmentation.
+
+
+## Longitudinal analysis with ANTs
+
+\Large
+Look at your data to verify the quality of the rigid mapping!
+
+
+
+## Processing of diffusion tensor data.
+
+  *  Intra-subject matching ( T1 $\rightarrow$ FA )
+  *  Compose warps for template space warp
+  *  Warp and reorient with preservation of principal direction
+  *  Get derived images (FA, MD, RGB, etc) 
+
+## Processing of diffusion tensor data.
+
+  ![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/fa_sub.png) 
+  ![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/t1_sub.png) 
+  ![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/overlay_template.png)
+  Subject FA & Subject T1 & Aligned composite 
+
+
+
+## Time series / rsfMRI analysis with ANTs
+
+```{r child = '/Users/stnava/Documents/writing/ANTS_MultiModality/rmd/motioncorr_example_input.Rmd'}
+```
+
+## Time series / rsfMRI analysis with ANTs
+
+*  mi --- mutual information metric
+
+*  Rigid --- use rigid map to the average with gradient step 0.05
+
+*  other params --- smoothing, scale estimation, iterations ...
+
+
+
+## Time series / rsfMRI analysis with ANTs
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/rsfmri_discon.jpg)
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/rsfmri_smooth.jpg)
+
+
+## Time series / rsfMRI analysis with ANTs
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/rsfmriplot1.pdf)
+
+
+
+## Time series / rsfMRI analysis with ANTs}
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/rsfmriplot2.pdf)
+
+
+
+## Extracting a resting state network
+
+```{r child = '/Users/stnava/Documents/writing/ANTS_MultiModality/rmd/rsfnodes_example_input.Rmd'}
+```
+
+Then build a graph ( see iGraph ).
+
+
+## How does structure and functional connectivity elaborate during development?
+
+open data
+
+
+
+
+## Reproducibility
+
+\Huge
+
+*  ANTs is ideal for producing reproducible research.
+
+*  It is multi-platform and portable.
+
+*  It can easily be modified for $+++$ different types of studies.
+
+
+
+## Reproducibility
+
+\Huge
+
+*  ANTs allows one to access the powers of both ITK and *R*.
+
+*  We aim to support user needs so if you can't find something,
+  just ask .... Questions?
+
+
+## Acknowledgements
+
+\Large
+
+*  NIBIB for software development support under grant R01-EB006266-01.
+*  The ITK development team.
+*  Dr. Murray Grossman for pushing application development.
+*  The NLM for providing stimulus funding in support of ITKv4.
+
+<!--
+
+
+-->

@@ -1,0 +1,11 @@
+```bash
+WarpImageMultiTransform $dim $lm2  ${out}lm.nii.gz \
+ ${out}preAffine.txt -R $img1 --use-NN
+WarpImageMultiTransform $dim $img2 ${out}img.nii.gz \
+ ${out}preAffine.txt -R $img1
+wt=1 ; pct=0.5 ; sig=50  
+ ANTS $dim  -i 55x40x30  -r Gauss[8,0] -t SyN[ 0.25 ]  
+ -m PSE[ $lm1 ,  ${out}lm.nii.gz  , $lm1 ,  ${out}lm.nii.gz  ,$wt,$pct,$sig,0,10,10000 ]  
+  -m  CC[$img1,${out}img.nii.gz,1,4] -o $out -i 50x50x50 --number-of-affine-iterations 0
+ --use-all-metrics-for-convergence 1 --continue-affine 0
+```

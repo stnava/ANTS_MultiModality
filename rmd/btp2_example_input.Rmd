@@ -1,0 +1,7 @@
+```bash
+for x in *deformed.nii.gz ; do
+  Atropos -d 2 -a $x -m [0.1,1x1] -i kmeans[2] \
+  -x mask.nii.gz -o [temp${ct}seg.nii.gz] -c [3,0]
+ls temp*seg.nii.gz > list.txt
+ImageSetStatistics 2 list.txt PHtemplateseg.nii.gz 0
+```

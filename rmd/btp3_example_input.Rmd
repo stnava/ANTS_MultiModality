@@ -1,0 +1,15 @@
+```{r btp3,eval=true}
+bd=paste(getwd(),"/examples/data/jacstudy/",sep='')
+phseg=antsImageRead( paste(bd,"PHtemplateseg.nii.gz",sep='') )
+mask=thresholdImage( phseg, 1, 1 )
+jlist=list()
+for ( x in Sys.glob( paste(bd,"PH*mWarp.nii.gz",sep='') ) )
+  jlist=lappend( jlist, createJacobianDeterminantImage(mask,x,1) )
+mat=imageListToMatrix( jlist, mask )
+mats=list( mat, matrix( cbind(rowMeans(mat),rowMeans(mat)) , ncol=2 ) )
+sccaner=sparseDecom2( mats, c(mask,NA), sparseness = c(0.1,0.9),
+  nvecs=2, its=5, perms=1000, cthresh=c(100,0), mycoption = 1 )
+plot( phseg, sccaner$eig1[[1]] , window.img=c(0,Inf))
+plot( phseg, sccaner$eig1[[2]] , window.img=c(0,Inf))
+print( sccaner$ccasummary )
+```

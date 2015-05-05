@@ -2,4 +2,4 @@
   ImageMath 3 ${out}_bmask.nii.gz GetLargestComponent ${out}_bmask.nii.gz 
   ImageMath 4 ${out}compcorr.nii.gz CompCorrAuto ${out}.nii.gz ${out}_bmask.nii.gz 6 
   sccan --timeseriesimage-to-matrix [ ${out}compcorr_corrected.nii.gz , ${out}_bmask.nii.gz , 0 , 1.0 ] -o ${out}.csv 
-  sccan --svd sparse[ ${out}.csv ,  ${out}_bmask.nii.gz , -0.05 ] -n 20 -i 10 --PClusterThresh 50 -o ${out}RSFNodes.nii.gz  
+  sccan --svd recon[ ${out}.csv ,  ${out}_bmask.nii.gz , 0.05 ] --l1 1 -n 20 -i 10 --PClusterThresh 50 -o ${out}RSFNodes.nii.gz  

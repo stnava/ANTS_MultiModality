@@ -1,0 +1,14 @@
+```bash
+antsRegistration -d $dim \
+  -r [ $img1, $img2, 1 ] \
+  -m mattes[$img1,$img2,1,32,Regular,0.25]  \
+  -t Affine[0.1] -c 50x40x30 \
+  -f 4x2x1 -s 2x1x0 \
+  -m CC[$img1,$img2,1,4]  \
+  -t SyN[0.25,3,0] -c 50x40x30 \
+  -f 4x2x1 -s 2x1x0  -o $out  
+antsApplyTransforms -d $dim -i $img2 -o ${out}.nii.gz \
+ -t ${out}1Warp.nii.gz -t ${out}0GenericAffine.mat -r $img1
+CreateWarpedGridImage $dim  ${out}1Warp.nii.gz \
+  ${out}grid.nii.gz 1x1 10x10 10x10
+```

@@ -1,0 +1,6 @@
+```bash
+ImageMath $dim temp.nii.gz GO $img 2  
+ImageMath $dim temp1.nii.gz Laplacian $img 1  
+ImageMath $dim temp2.nii.gz Grad $img 1 1  
+Atropos -d $dim -a $img -a temp.nii.gz  -a temp1.nii.gz  -a temp2.nii.gz -x ${out}mk.nii.gz -m [0.05,1x1]   -c [10,0]  -i kmeans[3] -o [${out}.nii.gz,${out}prob%02d.nii.gz]
+```
