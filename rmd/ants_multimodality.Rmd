@@ -500,7 +500,7 @@ plot( phseg, iMath( sccaner$eig1[[1]]^2,"Normalize"),
 
 ## ANTs multivariate voxel-wise statistics
 
-```{r sccaner4}
+```{r sccaner4,echo=FALSE}
 plot( phseg, iMath( sccaner$eig1[[2]]^2,"Normalize"),
       window.img=c(0,Inf), window.overlay=c(0.1,1))
 ```
@@ -577,12 +577,21 @@ Look at your data to verify the quality of the rigid mapping!
 
 ## Processing of diffusion tensor data.
 
-  ![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/fa_sub.png) 
-  ![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/t1_sub.png) 
-  ![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/overlay_template.png)
-  Subject FA & Subject T1 & Aligned composite 
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/fa_sub.png) 
 
+Subject FA 
 
+## Processing of diffusion tensor data.
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/t1_sub.png) 
+
+Subject T1 
+
+## Processing of diffusion tensor data.
+
+![](/Users/stnava/Documents/writing/ANTS_MultiModality/figures/overlay_template.png)
+
+Aligned composite 
 
 ## Time series / rsfMRI analysis with ANTs
 
