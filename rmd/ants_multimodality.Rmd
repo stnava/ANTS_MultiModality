@@ -1,7 +1,7 @@
 ---
 title: "Multi-modality processing with Advanced Normalization Tools (ANTs)"
 author: "Brian Avants, PICSL and the ANTs Development Team"
-date: "May XX 2015"
+date: "`r Sys.Date()`"
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -31,7 +31,7 @@ output:
 ```{r setup,echo=FALSE}
 library(ANTsR)
 library(knitr)
-bd="/Users/stnava/Documents/writing/ANTS_MultiModality/"
+bd=path.expand( "~/data/antsExamples/ANTS_MultiModality/" )
 ```
 
 ##
@@ -576,21 +576,28 @@ sccaner=sparseDecom2( mats, c(mask,NA),
   sparseness = c( 0.2, -1 ),
   nvecs=2, its=10, perms=200, 
   cthresh=c(50,0), mycoption = 0 )
-print( sccaner$ccasummary )
-print( sccaner$eig2 )
+```
+
+Print the sccan summary results.
+
+```{r sccaner2p,results='asis'}
+knitr::kable( sccaner$ccasummary )
+knitr::kable( sccaner$eig2 )
 ```
 
 ## ANTs multivariate voxel-wise statistics
 
 ```{r sccaner3,echo=FALSE}
-plot( phseg, iMath( sccaner$eig1[[1]]^2,"Normalize"),
+locimg = makeImage( mask , sccaner$eig1[,1]^2 )
+plot( phseg, iMath( locimg ,"Normalize"),
       window.img=c(0,Inf), window.overlay=c(0.1,1))
 ```
 
 ## ANTs multivariate voxel-wise statistics
 
 ```{r sccaner4,echo=FALSE}
-plot( phseg, iMath( sccaner$eig1[[2]]^2,"Normalize"),
+locimg = makeImage( mask , sccaner$eig1[,2]^2 )
+plot( phseg, iMath( locimg,"Normalize"),
       window.img=c(0,Inf), window.overlay=c(0.1,1))
 ```
 
