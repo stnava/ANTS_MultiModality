@@ -132,6 +132,8 @@ Currently running over 20,000 images within such a framework ...
 
 * `#! /usr/bin/Rscript`
 
+* No GUI ( for good reason )
+
 
 
 ## Design principles
@@ -141,7 +143,22 @@ Currently running over 20,000 images within such a framework ...
 
 ## Design principles: Matched to command line
 
-* Look at the command line for `antsRegistration` 
+$$ \int_0^1 \| v(x,t) \|_L^2 dt + \| I - J( \phi(x,1) ) \|^2   $$
+subject to:
+$$ \phi( x, 0 ) = A( x ) $$
+$$ \frac{d\phi(x,t)}{dt} = v( \phi( x,  t ), t ),  t \in [0, 1] $$
+
+
+
+## Design principles: Matched to command line
+
+$$ \int_0^1 \| v(x,t) \|_L^2 dt + M( I, J, \phi(x,1) )   $$
+subject to:
+$$ \phi( x, 0 ) = A( x ) $$
+$$ \frac{d\phi(x,t)}{dt} = v( \phi( x,  t ), t ),  t \in [0, 1] $$
+and $M$ is a *similarity metric*.
+
+* Look at the command line for `antsRegistration` via the [ANTs wiki](https://github.com/stnava/ANTs/wiki/Anatomy-of-an-antsRegistration-call)
 
 * compare with the code for `antsRegistration.R`
 
@@ -209,7 +226,7 @@ fcfn = paste( bd, "figures/templateFace.jpg", sep='' )
 facet = antsImageRead( fcfn ) %>% iMath("Normalize")
 fcfn = paste( bd, "figures/face3.jpg", sep='' )
 face3 = antsImageRead( fcfn ) %>% iMath("Normalize")
-face3t = antsRegistration( facet, face3, verbose=T, 
+face3t = antsRegistration( facet, face3, verbose=F, 
         typeofTransform = "SyNLessAggro")
 faceDiff = facet - face3t$warpedmovout
 ```
@@ -269,6 +286,7 @@ face3t = antsRegistration( facet, fcorrupt,
 plot( face3t$warpedmovout, doCropping=F )
 ```
 
+Exercise: can we fix this, fairly easily?
 
 ## CC example 1
 
@@ -295,7 +313,8 @@ plot( ford, doCropping=F )
 ## CC example 1
 
 ```{r facecc1b,echo=FALSE}
-plot( ford, carmap$warpedmovout, doCropping=F  )
+myedges = iMath( carmap$warpedmovout,"Grad",1)
+plot( ford, myedges, doCropping=F , window.overlay=c(0.1, max(myedges)) )
 ```
 
 ## Mutual Information example
@@ -310,13 +329,14 @@ r64m = getMask( r64 )
 r64i = r64[ r64m == 1 ]
 r64itx = r64i - median( r64i )
 r64itx = r64itx^2
-r64[ r64m == 1 ] = r64itx
+r64itx2 = r64i * (-1)   # negation - we should try this
+r64[ r64m == 1 ] = r64itx 
 ```
 
 ## Simulated intensity transformation
 
 ```{r itx}
-plot( r64i, r64itx )
+plot( r64i, r64itx2 )
 ```
 
 ## Mutual Information example
@@ -379,6 +399,7 @@ for ( img in reslist ) {
   mydf$MI[ ct ] = antsImageMutualInformation( r16,img )
   ct = ct + 1
 }
+rownames( mydf ) = c("SSDtx","CCtx","MItx")
 ```
 
 
