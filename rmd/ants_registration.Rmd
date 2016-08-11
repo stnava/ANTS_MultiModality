@@ -442,6 +442,87 @@ knitr::kable( mydf )
 ![](`r paste(bd,"/figures/wbirSlide16.pdf",sep='')`)
 
 
+## ANTs uses composite transformations
+
+* Registration: Data is in ANTsR `?getANTsRData`
+
+```{r antsreg}
+fi <- antsImageRead( getANTsRData("r16") )
+mi <- antsImageRead( getANTsRData("r64") )
+mytx <- antsRegistration(fixed=fi, moving=mi, 
+                         typeofTransform = c('SyN') )
+mywarpedimage <- antsApplyTransforms( fixed=fi, moving=mi,
+  transformlist=mytx$fwdtransforms )
+mygridw = createWarpedGrid( mi, fixedReferenceImage = fi, 
+  transform = mytx$fwdtransforms[ 1 ])
+mygrida = createWarpedGrid( mi, fixedReferenceImage = fi, 
+  transform = mytx$fwdtransforms[ 2 ])
+mygridwa = createWarpedGrid( mi, fixedReferenceImage = fi, 
+  transform = mytx$fwdtransforms )
+```
+
+## The Affine grid transform
+
+```{r antsregg1, echo=FALSE}
+plot( mygrida, doCropping=F )
+```
+
+## The Warp grid transform
+
+```{r antsregg2, echo=FALSE}
+plot( mygridw, doCropping=F )
+```
+
+## The composite grid transform
+
+```{r antsregg3, echo=FALSE}
+plot( mygridwa, doCropping=F )
+```
+
+
+## ANTs composite transformations can link several domains
+
+```{r facetface3face6, echo=TRUE}
+fcfn = paste( bd, "figures/templateFace.jpg", sep='' )
+facet = antsImageRead( fcfn ) %>% iMath("Normalize")
+fcfn = paste( bd, "figures/face3.jpg", sep='' )
+face3 = antsImageRead( fcfn ) %>% iMath("Normalize")
+fcfn = paste( bd, "figures/face4.jpg", sep='' )
+face8 = antsImageRead( fcfn ) %>% iMath("Normalize")
+face3t = antsRegistration( facet, face3, flowSigma = 6,
+        typeofTransform = "SyN", totalSigma = 0.5 )
+face8t = antsRegistration( facet, face8, flowSigma = 6,
+        typeofTransform = "SyN", totalSigma = 0.5 )
+```
+
+## Map subject 3 to subject 8
+
+```{r facetface3face6b, echo=TRUE}
+compositeTx = c( face3t$invtransforms, face8t$fwdtransforms )
+f8to3 = antsApplyTransforms( face3, face8, 
+  transformlist = compositeTx, 
+  whichtoinvert = c(T,F,F,F) )
+```
+
+
+## Map subject 3 to subject 8: result
+
+```{r facetface3face6bp1, echo=FALSE}
+plot( face8, doCropping=FALSE )
+```
+
+## Map subject 3 to subject 8: result
+
+```{r facetface3face6bp2, echo=FALSE}
+plot( f8to3, doCropping=FALSE )
+```
+
+
+## Map subject 3 to subject 8: result
+
+```{r facetface3face6bp3, echo=FALSE}
+plot( face3, doCropping=FALSE )
+```
 
 ## Time varying example
 
@@ -503,6 +584,41 @@ plot( cgridi )
 
 Initialization is critical to image registration ...
 
+```{r butterflies0, echo=TRUE}
+butterfly1 = antsImageRead( paste( bd, "figures/butterfly-3.jpg", sep='' ) )
+butterfly2 = antsImageRead( paste( bd, "figures/butterfly-15.jpg", sep='' ) )
+```
+
+
+## "Global" optimization - multistart code
+
+See the [ANTsR wiki](https://github.com/stnava/ANTsR/wiki)
+
+```{r butterflies, echo=TRUE}
+nout = 25
+thetas = seq( from = 0, to = 360, length.out = nout )[1:(nout-1)]
+mytx = "/tmp/best.mat"
+mival<-invariantImageSimilarity( butterfly1, butterfly2,
+  thetas=thetas, localSearchIterations=10, txfn=mytx )
+www = antsApplyTransforms( butterfly1, butterfly2, transformlist=mytx )
+```
+
+
+## "Global" optimization - butterfly2
+```{r butterflies2, echo=FALSE}
+plot( butterfly2 )
+```
+
+## "Global" optimization - butterfly1
+```{r butterflies3, echo=FALSE}
+plot( butterfly1 )
+```
+
+## "Global" optimization - butterfly2 to 1 result
+
+```{r butterflies4, echo=FALSE}
+plot( www )
+```
 
 # Case studies and conclusions
 
@@ -544,30 +660,7 @@ Initialization is critical to image registration ...
 
 
 
-
-## How did we compute that transformation?
-
-see the web example [http://stnava.github.io/cars/](http://stnava.github.io/cars/)
-
-## Mapping two images
-
-```bash
-antsRegistration -d $dim \
-  -r [ $img1, $img2, 1 ] \
-  -m mattes[$img1,$img2,1,32,Regular,0.25]  \
-  -t Affine[0.1] -c 50x40x30 \
-  -f 4x2x1 -s 2x1x0 \
-  -m CC[$img1,$img2,1,4]  \
-  -t SyN[0.25,3,0] -c 50x40x30 \
-  -f 4x2x1 -s 2x1x0  -o $out  
-antsApplyTransforms -d $dim -i $img2 -o ${out}.nii.gz \
- -t ${out}1Warp.nii.gz -t ${out}0GenericAffine.mat -r $img1
-CreateWarpedGridImage $dim  ${out}1Warp.nii.gz \
-  ${out}grid.nii.gz 1x1 10x10 10x10
-```
-
-
-## Mapping two images
+## Mapping two images: parameters
 
 ![](`r paste(bd,"/figures/r64registration.jpg",sep='')`)
 
@@ -595,53 +688,6 @@ What happens when i vary each parameter?
 
 *  Step-size increases stability but slows convergence 
   * ` SyN[ 0.1 ]` more stable than `SyN[ 0.25 ] `.
-
-
-## Check the affine mapping between two images
-![](`r paste(bd,"/figures/r64registrationaffine.jpg",sep='')`)
-
-**fixed versus affinely registered image versus original moving**
-
-
-## The Basic Registration Toolset
-
-* Registration: Data is in ANTsR `?getANTsRData`
-
-* See:  `?antsRegistration`
-
-```{r antsreg}
-fi <- antsImageRead(getANTsRData("r16") ,2)
-mi <- antsImageRead(getANTsRData("r64") ,2)
-mytx <- antsRegistration(fixed=fi, moving=mi, 
-                         typeofTransform = c('SyN') )
-mywarpedimage <- antsApplyTransforms( fixed=fi, moving=mi,
-  transformlist=mytx$fwdtransforms )
-mygridw = createWarpedGrid( mi, fixedReferenceImage = fi, 
-  transform = mytx$fwdtransforms[ 1 ])
-mygrida = createWarpedGrid( mi, fixedReferenceImage = fi, 
-  transform = mytx$fwdtransforms[ 2 ])
-mygridwa = createWarpedGrid( mi, fixedReferenceImage = fi, 
-  transform = mytx$fwdtransforms )
-```
-
-## The Affine grid transform
-
-```{r antsregg1}
-plot( mygrida, doCropping=F )
-```
-
-## The Warp grid transform
-
-```{r antsregg2}
-plot( mygridw, doCropping=F )
-```
-
-## The composite grid transform
-
-```{r antsregg3}
-plot( mygridwa, doCropping=F )
-```
-
 
 
 ## Coordinates of computation time
@@ -675,9 +721,7 @@ antsRegistration -d $dim -r [ $img1, $img2, 1 ] \
 ## Multiple metrics driving registration
 
 ![](`r paste(bd,"/figures/r64registrationmm.jpg",sep='')`)
- 
-fixed versus ... 
- 
+
 
 ## Landmark-based registration 1
 
@@ -714,7 +758,17 @@ wt=1 ; pct=0.5 ; sig=50
 *  Then use antsApplyTransforms to apply
   the warp to the relevant image.
 
+## Conclusions
 
+* Background: ANTs fuses ideas from mathematics, optimization, software engineering
+
+* Design:  ANTs uses interchangeable pieces to aid flexibility
+
+* Metrics: We illustrated the advantages of different similarity metrics
+
+* Transforms:  We showed both constrained and highly flexible mappings and how to use them
+
+* Optimization:  We indicated our primary optimization techniques and showed a tool for overcoming challenging registration scenarios
 
 ## Acknowledgements
 
