@@ -336,7 +336,7 @@ r64[ r64m == 1 ] = r64itx
 ## Simulated intensity transformation
 
 ```{r itx}
-plot( r64i, r64itx2 )
+plot( r64i, r64itx )
 ```
 
 ## Mutual Information example
