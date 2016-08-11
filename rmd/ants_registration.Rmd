@@ -1,0 +1,690 @@
+---
+title: "ANTs image registration"
+author: "Brian Avants"
+date: "`r Sys.Date()`"
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    highlight: tango
+    incremental: yes
+    theme: AnnArbor
+    includes:
+      in_header: mystyle.tex
+    toc: yes
+  ioslides_presentation:
+    highlight: zenburn
+    incremental: yes
+  revealjs::revealjs_presentation:
+    center: yes
+    fig_width: 12
+    highlight: zenburn
+    incremental: yes
+    pandoc_args:
+    - --slide-level
+    - '2'
+    self_contained: no
+    smaller: no
+    theme: night
+    transition: fade
+    widescreen: yes
+---
+
+```{r setup,echo=FALSE}
+library(ANTsR)
+library(knitr)
+bd=path.expand( "~/data/antsExamples/ANTS_MultiModality/" )
+```
+
+##
+
+This presentation is copyrighted by
+
+The **ANTs software consortium**
+
+distributed under the
+
+[Creative Commons by Attribution License 3.0](http://creativecommons.org/licenses/by/3.0)
+
+# Background and basics
+
+## 
+
+\Huge Background and basics
+
+
+## Simple hints for ...
+
+![](`r paste(bd,"/figures/simplehints.jpg",sep='')`)
+
+## What is image registration?
+
+![](`r paste(bd,"/figures/iregProblem.pdf",sep='')`)
+
+## Key Assumption: 
+
+\Huge Image content is "very similar"
+\large up to geometric transformation
+
+
+## What is image registration?
+
+![](`r paste(bd,"/figures/artillery.pdf",sep='')`)
+
+## What is image registration?
+
+![](`r paste(bd,"/figures/whatisreg2.pdf",sep='')`)
+
+
+## What is image registration?
+
+![](`r paste(bd,"/figures/whatisreg3.pdf",sep='')`)
+
+
+## Basics of the image registration algorithm
+
+![](`r paste(bd,"/figures/iregAlg1.pdf",sep='')`)
+
+## Apply continuous mapping in digital space
+
+![](`r paste(bd,"/figures/iregAlg2.pdf",sep='')`)
+
+
+
+## History: Theory
+
+![](`r paste(bd,"/figures/ants_history_t.pdf",sep='')`)
+
+## History: Implementation
+
+ANTs absorbs, borg-like, much of this history ...
+
+![](`r paste(bd,"/figures/ants_history.pdf",sep='')`)
+
+# ANTs Design
+
+## 
+
+\Huge ANTs Design
+
+## Overview:  Programs $+$ brief description
+
+[see the ants handout](https://github.com/stnava/ANTsTutorial/raw/master/handout/antsHandout.pdf)
+
+## ANTs is good for scripting large-scale studies
+
+This is a very common trope in our work ...
+
+```bash
+for x in *nii.gz ; do 
+  exe = " antsCorticalThickness.sh -d .... "
+  qsub ... $exe ...
+done
+```
+
+Currently running over 20,000 images within such a framework ...
+
+## App-like framework
+
+* ANTs likes short bash scripts
+
+* Longer scripts should use R, ANTsR or perl
+
+* `#! /usr/bin/Rscript`
+
+
+
+## Design principles
+
+![](`r paste(bd,"/figures/wbirSlide10.pdf",sep='')`)
+
+
+## Design principles: Matched to command line
+
+* Look at the command line for `antsRegistration` 
+
+* compare with the code for `antsRegistration.R`
+
+
+#  Similarity Metrics
+
+## 
+
+\Huge  Similarity Metrics
+
+## Design principles: Similarity metrics
+
+![](`r paste(bd,"/figures/wbirSlide12.pdf",sep='')`)
+
+## What types of images are relevant for each?
+
+* Mean squares:  very rarely do we use this except perhaps for binary images or maybe CT
+
+* Global correlation:  sometimes useful in conjunction with mutual information but overall rarely used
+
+* **Mutual information**:  our go-to metric for low-dimensional or fast mapping
+
+* **Neighborhood correlation**:  our go-to metric for high-dimensional, detailed mapping
+
+## Mean squares example 1
+
+```{r facemsq}
+fcfn = paste( bd, "figures/templateFace.jpg", sep='' )
+facet = antsImageRead( fcfn ) %>% iMath("Normalize")
+fcfn = paste( bd, "figures/face3.jpg", sep='' )
+face3 = antsImageRead( fcfn ) %>% iMath("Normalize")
+face3t = antsRegistration( facet, face3, 
+        typeofTransform = "Translation")
+faceDiff = facet - face3t$warpedmovout
+```
+
+## Mean squares example 1
+
+```{r facemsq1,echo=FALSE}
+invisible( plot( facet, doCropping=F ) )
+```
+
+## Mean squares example 1
+
+```{r facemsq2,echo=FALSE}
+plot( face3, doCropping=F )
+```
+
+## Mean squares example 1
+
+```{r facemsq3,echo=FALSE}
+plot( faceDiff, doCropping=F )
+metValue = mean( faceDiff^2 )
+```
+
+The mean squared value is `r metValue`.
+
+
+## Mean squares example 2
+
+Run a deformable registration ...
+
+```{r facemsqb}
+fcfn = paste( bd, "figures/templateFace.jpg", sep='' )
+facet = antsImageRead( fcfn ) %>% iMath("Normalize")
+fcfn = paste( bd, "figures/face3.jpg", sep='' )
+face3 = antsImageRead( fcfn ) %>% iMath("Normalize")
+face3t = antsRegistration( facet, face3, 
+        typeofTransform = "SyNLessAggro")
+faceDiff = facet - face3t$warpedmovout
+```
+
+
+## Mean squares example 2
+
+```{r facemsq3b,echo=FALSE}
+plot( faceDiff, doCropping=F )
+metValue2 = mean( faceDiff^2 )
+```
+
+The mean squared value is `r metValue2` and ratio is `r metValue2/metValue`.
+
+
+## Mean squares example 2
+
+```{r facemsq3bresb2,echo=FALSE}
+plot( face3t$warpedmovout, doCropping=F )
+```
+
+## Mean squares example 2
+
+```{r facemsq3bres,echo=FALSE}
+plot( facet, doCropping=F )
+```
+
+
+## Mean squares example 2
+
+```{r facemsq3bresbb,echo=FALSE}
+mycanny = iMath( face3t$warpedmovout,"Canny",1,5,0.2)
+mygrad  = iMath( face3t$warpedmovout,"Grad", 1 ) %>%
+  iMath("Normalize")
+plot( facet, mygrad, window.overlay=c(0.15,1), doCropping=F )
+```
+
+
+## Mean squares example 3
+
+Run a deformable registration ...
+
+```{r facemsqbb}
+face3 = antsImageRead( fcfn ) %>% iMath("Normalize")
+# make a gradient across this image
+corrvals = 1:length(face3[face3 >= 0])
+fcorrupt = as.antsImage(as.array(face3) * corrvals^1 )
+fcorrupt = antsCopyImageInfo( face3, fcorrupt )
+face3t = antsRegistration( facet, fcorrupt, 
+        typeofTransform = "SyNLessAggro")
+```
+
+
+## Mean squares example 3
+
+```{r facemsq3bresbc,echo=FALSE}
+plot( face3t$warpedmovout, doCropping=F )
+```
+
+
+## CC example 1
+
+Let's look at another image type ...
+
+```{r carscc1}
+ford = paste( bd, "figures/ford.jpg", sep='' )
+ford = antsImageRead( ford )
+beet = paste( bd, "figures/beetle.jpg", sep='' )
+beet = antsImageRead( beet ) %>% iMath("Normalize")
+carmap = antsRegistration( ford, beet, 
+        flowSigma = 1, gradStep = 0.25,
+        typeofTransform = "SyNCC", totalSigma=0.5 )
+```
+
+
+## CC example 1
+
+```{r fordp,echo=FALSE}
+plot( ford, doCropping=F )
+```
+
+
+## CC example 1
+
+```{r facecc1b,echo=FALSE}
+plot( carmap$warpedmovout, doCropping=F )
+```
+
+## Mutual Information example
+
+Let us transform the intensity of some brain images
+to mimic a situation where MI does well.
+
+```{r miexA}
+r16 = antsImageRead( getANTsRData( "r16" ) )
+r64 = antsImageRead( getANTsRData( "r64" ) )
+r64m = getMask( r64 )
+r64i = r64[ r64m == 1 ]
+r64itx = r64i - mean( r64i )
+r64itx = r64itx^2
+r64[ r64m == 1 ] = r64itx
+plot( r64 )
+```
+
+## Mutual Information example
+
+```{r miex0,echo=FALSE}
+plot( r64 )
+```
+
+## Mutual Information example: Two different metrics
+
+```{r miex}
+mitx = antsRegistration( r16, r64, typeofTransform = "SyN" )
+cctx = antsRegistration( r16, r64, typeofTransform = "SyNCC",
+        flowSigma = 1, gradStep = 0.2, totalSigma=0.0 )
+ssdtx = antsRegistration( r16, r64, typeofTransform = "SyNLessAggro" )
+```
+
+
+## Fixed image
+
+```{r miex2,echo=FALSE}
+plot( r16, doCropping=F)
+```
+
+## MI result (warped moving)
+
+```{r miex3,echo=FALSE}
+plot( mitx$warpedmovout, doCropping=F)
+```
+
+## MSQ result (warped moving)
+
+```{r miex4,echo=FALSE}
+plot( ssdtx$warpedmovout, doCropping=F)
+```
+
+## CC result (warped moving)
+
+```{r miex5,echo=FALSE}
+plot( cctx$warpedmovout, doCropping=F)
+```
+
+
+## Compare metric values
+
+SSD, Corr and MI
+```{r miex6,eval=TRUE,results='asis'}
+reslist = list( ssdtx$warpedmovout, cctx$warpedmovout, mitx$warpedmovout )
+mydf = data.frame( SSD=rep(NA,3), Corr=rep(NA,3), MI=rep(NA,3) )
+ct = 1
+r16mask = getMask( r16 )
+for ( img in reslist ) {
+  mydf$SSD[ ct ] = mean( abs( r16-img ) )
+  mydf$Corr[ ct ] = cor( r16[r16mask==1], img[r16mask==1] )
+  mydf$MI[ ct ] = antsImageMutualInformation( r16,img )
+  ct = ct + 1
+}
+knitr::kable( mydf )
+```
+
+#  Transformation spaces
+
+## 
+
+\Huge Transformation spaces
+
+## Design principles: A mapping
+
+![](`r paste(bd,"/figures/wbirSlide11.pdf",sep='')`)
+
+## Design principles: A mapping
+
+* Look at the command line for `antsApplyTransforms` 
+
+* compare with the help for `antsApplyTransforms.R`
+
+## How are coordinate systems managed?
+
+![](`r paste(bd,"/figures/wbirSlide13.pdf",sep='')`)
+
+## Affine mapping
+
+![](`r paste(bd,"/figures/wbirSlide14.pdf",sep='')`)
+
+## Affine mapping - applied
+
+![](`r paste(bd,"/figures/wbirSlide15.pdf",sep='')`)
+
+## Deformable mapping
+
+![](`r paste(bd,"/figures/wbirSlide16.pdf",sep='')`)
+
+
+
+## Time varying example
+
+Run a large deformation registration ...
+
+```{r cchalf}
+cfull = antsImageRead( paste( bd, "figures/c.jpg", sep='' ) )
+chalf = antsImageRead( paste( bd, "figures/chalf.jpg", sep='' ) )
+cmap = antsRegistration( chalf, cfull,
+        typeofTransform = "TVMSQC", verbose=F )
+cgridf = createWarpedGrid( chalf, fixedReferenceImage = chalf, 
+      transform = cmap$fwdtransforms )
+cgridi = createWarpedGrid( chalf, fixedReferenceImage = chalf, 
+      transform = cmap$invtransforms )
+```
+
+## "C"lassic example: full to half "C"
+
+```{r cchalfp,echo=FALSE}
+plot( cfull, chalf )
+```
+
+
+## Time varying example: Forward map
+
+```{r cgridf,echo=FALSE}
+plot( cgridf )
+```
+
+## Time varying example: Inverse map
+
+```{r cgridi,echo=FALSE}
+plot( cgridi )
+```
+
+# ANTs Optimization
+
+## 
+
+\Huge ANTs Optimization
+
+## Notation for composite transformation / optimization
+
+![](`r paste(bd,"/figures/wb17.pdf",sep='')`)
+
+## Optimization problem statement for image registration
+
+![](`r paste(bd,"/figures/wb18.pdf",sep='')`)
+
+## Gradient calculation at a point
+
+![](`r paste(bd,"/figures/wb19.pdf",sep='')`)
+
+## Conjugate gradient algorithm
+
+![](`r paste(bd,"/figures/wb20.pdf",sep='')`)
+
+## "Global" optimization - multistart
+
+Initialization is critical to image registration ...
+
+
+# Case studies and conclusions
+
+## 
+
+\Huge Case studies and conclusions
+
+
+## Specific case: MI $+$ Affine
+
+![](`r paste(bd,"/figures/wb23.pdf",sep='')`)
+
+## Specific case: MI $+$ Elastic
+
+![](`r paste(bd,"/figures/wb25.pdf",sep='')`)
+
+## Specific case: MI $+$ Elastic "C" example
+
+![](`r paste(bd,"/figures/wb26.pdf",sep='')`)
+
+## Specific case: CC $+$ diffeomorphism
+
+![](`r paste(bd,"/figures/wb27.pdf",sep='')`)
+
+## Specific case: CC $+$ diffeomorphism
+
+![](`r paste(bd,"/figures/wb28.pdf",sep='')`)
+
+
+## Specific case: CC $+$ diffeomorphism **result**
+
+![](`r paste(bd,"/figures/wb29.pdf",sep='')`)
+
+
+
+## Specific case: MSQ RGB $+$ affine and elastic
+
+![](`r paste(bd,"/figures/wbAppleOrange.pdf",sep='')`)
+
+
+
+
+## How did we compute that transformation?
+
+see the web example [http://stnava.github.io/cars/](http://stnava.github.io/cars/)
+
+## Mapping two images
+
+```bash
+antsRegistration -d $dim \
+  -r [ $img1, $img2, 1 ] \
+  -m mattes[$img1,$img2,1,32,Regular,0.25]  \
+  -t Affine[0.1] -c 50x40x30 \
+  -f 4x2x1 -s 2x1x0 \
+  -m CC[$img1,$img2,1,4]  \
+  -t SyN[0.25,3,0] -c 50x40x30 \
+  -f 4x2x1 -s 2x1x0  -o $out  
+antsApplyTransforms -d $dim -i $img2 -o ${out}.nii.gz \
+ -t ${out}1Warp.nii.gz -t ${out}0GenericAffine.mat -r $img1
+CreateWarpedGridImage $dim  ${out}1Warp.nii.gz \
+  ${out}grid.nii.gz 1x1 10x10 10x10
+```
+
+
+## Mapping two images
+
+![](`r paste(bd,"/figures/r64registration.jpg",sep='')`)
+
+**Can vary smoothness, metrics, etc.  See help.**
+
+
+
+## Meaning of ANTs registration parameters
+
+What happens when i vary each parameter?
+
+*  Robustness increases with regularization 
+  * ` -r Gauss[6,3]` $>$ `-r Gauss[3,0] `
+
+*  Flexibility decreases with regularization 
+  * ` -r Gauss[6,3]` $<$ `-r Gauss[3,0] `
+
+*  Robustness increases with correlation window 
+  * ` -m CC[ . , . , 1 , 4 ]` $<$  `-m CC[ . , . , 1 , 6 ]  ` 
+  * but computation time also increases
+
+*  Details matter:  pre-processing, feature extraction, etc.
+
+*  Successful affine step is essential!!
+
+*  Step-size increases stability but slows convergence 
+  * ` SyN[ 0.1 ]` more stable than `SyN[ 0.25 ] `.
+
+
+## Check the affine mapping between two images
+![](`r paste(bd,"/figures/r64registrationaffine.jpg",sep='')`)
+
+**fixed versus affinely registered image versus original moving**
+
+
+## The Basic Registration Toolset
+
+* Registration: Data is in ANTsR `?getANTsRData`
+
+* See:  `?antsRegistration`
+
+```{r antsreg}
+fi <- antsImageRead(getANTsRData("r16") ,2)
+mi <- antsImageRead(getANTsRData("r64") ,2)
+mytx <- antsRegistration(fixed=fi, moving=mi, 
+                         typeofTransform = c('SyN') )
+mywarpedimage <- antsApplyTransforms( fixed=fi, moving=mi,
+  transformlist=mytx$fwdtransforms )
+mygridw = createWarpedGrid( mi, fixedReferenceImage = fi, 
+  transform = mytx$fwdtransforms[ 1 ])
+mygrida = createWarpedGrid( mi, fixedReferenceImage = fi, 
+  transform = mytx$fwdtransforms[ 2 ])
+mygridwa = createWarpedGrid( mi, fixedReferenceImage = fi, 
+  transform = mytx$fwdtransforms )
+```
+
+## The Affine grid transform
+
+```{r antsregg1}
+plot( mygrida, doCropping=F )
+```
+
+## The Warp grid transform
+
+```{r antsregg2}
+plot( mygridw, doCropping=F )
+```
+
+## The composite grid transform
+
+```{r antsregg3}
+plot( mygridwa, doCropping=F )
+```
+
+
+
+## Coordinates of computation time
+
+*  2D 256$^2$ pixels intensity difference (MSQ) registration
+  $\approx$ \textcolor{red}{30 seconds}
+
+*  3D 256$^3$ voxels correlation-8 ( CC[ . , . , 1,
+8] ) could take \textcolor{red}{3 days} if you use full-resolution and the images are
+very different.
+
+*   or it could take \textcolor{red}{15 minutes} if you use low-resolution and the
+  images are very similar.
+
+
+## Multiple metrics driving registration
+
+```bash
+antsRegistration -d $dim -r [ $img1, $img2, 1 ] \
+  -m mattes[$img1,$img2,1,32,Regular,0.25]  \
+  -t Affine[0.1] \
+  -c 50x40x30 \
+  -f 4x2x1 -s 2x1x0 \
+  -m CC[$img1,$img2,1,4]  \
+  -m meansquares[$lm1,$lm2,1,4]  \
+  -f 4x2x1 -s 2x1x0 \
+  -t SyN[0.25,3,0] -c 50x40x30 -o $out  
+```
+
+
+## Multiple metrics driving registration
+
+![](`r paste(bd,"/figures/r64registrationmm.jpg",sep='')`)
+ 
+fixed versus ... 
+ 
+
+## Landmark-based registration 1
+
+![](`r paste(bd,"/figures/landmarks.jpg",sep='')`)
+
+
+
+## Landmark-based registration 2
+
+```bash
+WarpImageMultiTransform $dim $lm2  ${out}lm.nii.gz \
+ ${out}preAffine.txt -R $img1 --use-NN
+WarpImageMultiTransform $dim $img2 ${out}img.nii.gz \
+ ${out}preAffine.txt -R $img1
+wt=1 ; pct=0.5 ; sig=50  
+ ANTS $dim  -i 55x40x30  -r Gauss[8,0] -t SyN[ 0.25 ]  
+ -m PSE[ $lm1 ,  ${out}lm.nii.gz  , $lm1 ,  ${out}lm.nii.gz  ,$wt,$pct,$sig,0,10,10000 ]  
+  -m  CC[$img1,${out}img.nii.gz,1,4] -o $out -i 50x50x50 --number-of-affine-iterations 0
+ --use-all-metrics-for-convergence 1 --continue-affine 0
+```
+
+
+## Landmark-based registration 3
+
+![](`r paste(bd,"/figures/r64registrationlm.jpg",sep='')`)
+
+
+## Other Landmark-based registration tools
+
+*  for 3D
+*  ANTSUseLandmarkImagesToGetAffineTransform lm1.nii.gz lm2.nii.gz affine outaffine.txt
+*  ANTSUseLandmarkImagesToBSplineDisplacementField lm1.nii.gz lm2.nii.gz outLMWarp.nii.gz
+  10x10x10 6 3 0
+*  Then use antsApplyTransforms to apply
+  the warp to the relevant image.
+
+
+
+## Acknowledgements
+
+\Large
+
+*  NIBIB for software development support under grant R01-EB006266-01.
+*  The ITK development team.
+*  Dr. Murray Grossman for pushing application development.
+*  The NLM for providing stimulus funding in support of ITKv4.
+
