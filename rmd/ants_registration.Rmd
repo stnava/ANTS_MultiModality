@@ -209,7 +209,7 @@ fcfn = paste( bd, "figures/templateFace.jpg", sep='' )
 facet = antsImageRead( fcfn ) %>% iMath("Normalize")
 fcfn = paste( bd, "figures/face3.jpg", sep='' )
 face3 = antsImageRead( fcfn ) %>% iMath("Normalize")
-face3t = antsRegistration( facet, face3, 
+face3t = antsRegistration( facet, face3, verbose=T, 
         typeofTransform = "SyNLessAggro")
 faceDiff = facet - face3t$warpedmovout
 ```
@@ -295,7 +295,7 @@ plot( ford, doCropping=F )
 ## CC example 1
 
 ```{r facecc1b,echo=FALSE}
-plot( carmap$warpedmovout, doCropping=F )
+plot( ford, carmap$warpedmovout, doCropping=F  )
 ```
 
 ## Mutual Information example
@@ -308,10 +308,15 @@ r16 = antsImageRead( getANTsRData( "r16" ) )
 r64 = antsImageRead( getANTsRData( "r64" ) )
 r64m = getMask( r64 )
 r64i = r64[ r64m == 1 ]
-r64itx = r64i - mean( r64i )
+r64itx = r64i - median( r64i )
 r64itx = r64itx^2
 r64[ r64m == 1 ] = r64itx
-plot( r64 )
+```
+
+## Simulated intensity transformation
+
+```{r itx}
+plot( r64i, r64itx )
 ```
 
 ## Mutual Information example
@@ -323,10 +328,15 @@ plot( r64 )
 ## Mutual Information example: Two different metrics
 
 ```{r miex}
-mitx = antsRegistration( r16, r64, typeofTransform = "SyN" )
-cctx = antsRegistration( r16, r64, typeofTransform = "SyNCC",
-        flowSigma = 1, gradStep = 0.2, totalSigma=0.0 )
-ssdtx = antsRegistration( r16, r64, typeofTransform = "SyNLessAggro" )
+mitx = antsRegistration( r16, r64, 
+  typeofTransform = "SyN",
+  flowSigma = 1, gradStep = 0.2, totalSigma=0.0 )
+cctx = antsRegistration( r16, r64, 
+  typeofTransform = "SyNCC",
+  flowSigma = 1, gradStep = 0.2, totalSigma=0.0 )
+ssdtx = antsRegistration( r16, r64, 
+  typeofTransform = "SyNAggro",
+  flowSigma = 1, gradStep = 0.2, totalSigma=0.0 )
 ```
 
 
@@ -355,7 +365,7 @@ plot( cctx$warpedmovout, doCropping=F)
 ```
 
 
-## Compare metric values
+## Collect metric values
 
 SSD, Corr and MI
 ```{r miex6,eval=TRUE,results='asis'}
@@ -369,6 +379,12 @@ for ( img in reslist ) {
   mydf$MI[ ct ] = antsImageMutualInformation( r16,img )
   ct = ct + 1
 }
+```
+
+
+## Compare metric values
+
+```{r miex7,eval=TRUE,results='asis'}
 knitr::kable( mydf )
 ```
 
@@ -413,7 +429,7 @@ Run a large deformation registration ...
 ```{r cchalf}
 cfull = antsImageRead( paste( bd, "figures/c.jpg", sep='' ) )
 chalf = antsImageRead( paste( bd, "figures/chalf.jpg", sep='' ) )
-cmap = antsRegistration( chalf, cfull,
+cmap = antsRegistration( chalf, cfull, gradStep = 2,
         typeofTransform = "TVMSQC", verbose=F )
 cgridf = createWarpedGrid( chalf, fixedReferenceImage = chalf, 
       transform = cmap$fwdtransforms )
